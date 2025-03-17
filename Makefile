@@ -9,7 +9,8 @@ LIBFT_PATH	= libft
 LIBFT		= $(LIBFT_PATH)/libft.a
 INCLUDES	= -I includes/ -I $(LIBFT_PATH) -I$(MLX_PATH)
 
-SRCS		= srcs/main.c
+SRCS		= srcs/main.c \
+			  srcs/parsing/check_file.c
 
 OBJS		= $(SRCS:.c=.o)
 

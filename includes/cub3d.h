@@ -46,4 +46,11 @@ typedef struct s_game
     // Autres variables à ajouter selon les besoins
 }   t_game;
 
+/* Parsing functions */
+int		check_file_extension(char *filename);
+int		check_file_access(char *filename);
+int     parse_textures(t_game *game, int fd);
+int     parse_colors(t_game *game, int fd);
+int     parse_map(t_game *game, int fd);
+
 #endif
