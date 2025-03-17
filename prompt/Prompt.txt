@@ -1,0 +1,131 @@
+Résumé Ultra-Détaillé des Tâches du Projet Cub3D
+1. Présentation Générale du Projet
+Le projet Cub3D s'inspire du jeu Wolfenstein 3D, premier FPS (First Person Shooter) sorti en 1992. Il consiste à créer une représentation visuelle en 3D d’un labyrinthe en utilisant la technique du ray-casting. Ce projet fait partie des projets graphiques de l'école 42 et utilise la MiniLibX, une bibliothèque graphique légère.
+
+L'objectif est de permettre au joueur de se déplacer à la première personne dans un labyrinthe affiché en 3D, avec un rendu réaliste basé sur des murs texturés et une gestion des couleurs pour le sol et le plafond.
+
+2. Objectifs du Projet
+Le projet Cub3D vise plusieurs objectifs pédagogiques :
+
+Programmation en C : Respect des normes de codage, gestion de la mémoire, optimisation.
+Utilisation d’algorithmes graphiques : Implémentation d’un moteur de rendu basé sur le ray-casting.
+Manipulation de la MiniLibX : Création d’une fenêtre, gestion des événements clavier et souris, affichage d’images.
+Mathématiques appliquées : Calculs trigonométriques (angles de vue, distances), projections 3D simplifiées.
+Lecture et interprétation de fichiers : Analyse et validation de fichiers de configuration (.cub).
+3. Contraintes et Règles Générales
+3.1. Langage et Normes
+Tout doit être codé en C et respecter la norme de l'école 42.
+Pas d'utilisation de for, do-while, switch, ni de variables globales.
+3.2. Stabilité et Gestion des Erreurs
+Aucune erreur fatale ne doit provoquer un segmentation fault, bus error ou double free.
+Toute mémoire allouée doit être libérée correctement (pas de memory leaks).
+Si un fichier de configuration est mal formé, le programme doit s’arrêter proprement et afficher une erreur.
+3.3. Compilation et Exécution
+Le projet doit être compilé avec :
+sh
+Copier
+Modifier
+gcc -Wall -Wextra -Werror
+Un Makefile est obligatoire avec les règles :
+all : Compilation du programme.
+clean : Suppression des fichiers objets.
+fclean : Suppression des fichiers objets et de l’exécutable.
+re : Recompilation complète du projet.
+bonus : Compilation des fonctionnalités supplémentaires.
+4. Partie Obligatoire
+Le programme cub3D doit être capable d’afficher un labyrinthe en 3D et permettre au joueur de s’y déplacer.
+
+4.1. Fonctionnalités de Base
+4.1.1. Affichage de la Carte en 3D
+Utilisation du ray-casting pour générer une vue réaliste.
+Gestion des murs texturés selon leur orientation (Nord, Sud, Est, Ouest).
+Différenciation des couleurs du sol et du plafond.
+4.1.2. Contrôles et Déplacements
+Flèches gauche/droite : Rotation de la caméra.
+Touches W, A, S, D : Déplacement du joueur dans le labyrinthe.
+Touche ESC : Quitter proprement le programme.
+Clic sur la croix rouge de la fenêtre : Fermer la fenêtre et quitter proprement.
+4.2. Gestion des Fichiers de Configuration (.cub)
+Le programme prend en entrée un fichier .cub contenant :
+
+Textures des murs :
+bash
+Copier
+Modifier
+NO ./path_to_the_north_texture
+SO ./path_to_the_south_texture
+WE ./path_to_the_west_texture
+EA ./path_to_the_east_texture
+Couleurs du sol et du plafond :
+r
+Copier
+Modifier
+F 220,100,0  # Couleur du sol (RGB)
+C 225,30,0   # Couleur du plafond (RGB)
+Carte du labyrinthe :
+1 : Mur
+0 : Espace vide
+N, S, E, W : Position et orientation initiale du joueur
+Exemple de carte :
+Copier
+Modifier
+111111
+100101
+101001
+1100N1
+111111
+Validation de la Carte
+La carte doit être fermée par des murs (1).
+Tout élément invalide doit entraîner un message d'erreur clair.
+4.3. Gestion de l’Affichage avec MiniLibX
+Création et gestion d’une fenêtre graphique.
+Chargement et affichage des textures des murs.
+Coloration dynamique du sol et du plafond.
+Rendu fluide des déplacements et rotations de la caméra.
+5. Partie Bonus (Facultative)
+⚠️ Les bonus ne sont pris en compte que si la partie obligatoire est parfaite !
+
+5.1. Liste des Bonus Possibles
+Gestion des collisions : Empêcher le joueur de traverser les murs.
+Système de mini-carte : Affichage d’une carte en temps réel.
+Portes interactives : Ouvrir/fermer des portes dans le labyrinthe.
+Animations et sprites : Ajouter des éléments animés dans l’environnement.
+Contrôle de la caméra à la souris : Rotation fluide avec la souris.
+5.2. Modifications Autorisées pour les Bonus
+Ajout de nouveaux symboles dans la carte (D pour une porte par exemple).
+Modification du format du fichier .cub pour supporter des éléments supplémentaires.
+Ajout de nouvelles fonctionnalités en respectant la logique du projet.
+6. Exemples et Validation
+6.1. Exemple de Fichier .cub
+plaintext
+Copier
+Modifier
+NO ./path_to_north_texture
+SO ./path_to_south_texture
+WE ./path_to_west_texture
+EA ./path_to_east_texture
+F 220,100,0
+C 225,30,0
+
+1111111111111111111111111
+1000000000110000000000001
+1011000001110000000000001
+1001000000000000000000001
+1111111110110000011100001
+1000000000110000011101111
+1111011111111101110000001
+1111011111111101110101001
+1100000011010101110000001
+1000000000000000110000001
+1000000000000000110101001
+1100000111010101111101111
+11110111 1110101 1011110111
+11111111 1111111 1111111111
+6.2. Validation et Évaluation
+Tests rigoureux sur différentes cartes valides et invalides.
+Vérification des erreurs et du respect des contraintes.
+Évaluation en peer-review avec dépôt sur Git.
+7. Conclusion
+Le projet Cub3D est une introduction avancée au développement de moteurs graphiques en 3D simplifiée. Il combine programmation en C, gestion des événements, rendu graphique et algorithmes mathématiques. La réussite de ce projet repose sur une bonne compréhension du ray-casting, une gestion efficace de la MiniLibX, et une lecture précise des fichiers de configuration.
+
+⚠️ Clé du succès : Tester, tester et encore tester !

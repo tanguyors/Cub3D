@@ -1,0 +1,59 @@
+1. PHASE PRÉLIMINAIRE (1-2 jours)
+
+[ ] Création de l'arborescence du projet //done
+Apply to Prompt.txt
+[ ] Configuration du Makefile basique //done
+[ ] Installation et test de la MiniLibX // done
+[ ] Création des structures de données de base // done
+
+2. PARSING (3-4 jours)
+
+[ ] Lecture du fichier .cub
+Vérification de l'extension
+Ouverture et lecture du fichier
+[ ] Parser les textures (NO, SO, WE, EA)
+Validation des chemins
+Vérification du format
+[ ] Parser les couleurs (F, C)
+Validation du format RGB
+Conversion en valeurs utilisables
+[ ] Parser la carte
+Validation des caractères (1,0,N,S,E,W)
+Vérification de la fermeture des murs
+Validation de la position du joueur
+
+3. INITIALISATION GRAPHIQUE (2-3 jours)
+
+[ ] Configuration de la MiniLibX
+Création de la fenêtre
+Initialisation des images
+[ ] Gestion des événements
+Mouvements (WASD)
+Rotation (flèches)
+Fermeture (ESC et croix)
+[ ] Mise en place de la boucle principale
+
+4. MOTEUR DE RAY-CASTING (5-7 jours)
+
+[ ] Implémentation des calculs de base
+Vecteurs de direction
+Calcul des rayons
+[ ] Détection des collisions avec les murs
+[ ] Calcul des distances
+[ ] Projection des murs
+Hauteur des murs
+Distance de projection
+[ ] Application des textures
+Chargement des textures
+Mapping des textures sur les murs
+[ ] Rendu du sol et du plafond
+
+5. OPTIMISATION ET DÉBUG (3-4 jours)
+[ ] Optimisation des performances
+[ ] Gestion de la mémoire
+Vérification des fuites
+Libération correcte
+[ ] Tests approfondis
+Différentes cartes
+Cas d'erreurs
+Comportement général
