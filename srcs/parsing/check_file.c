@@ -14,7 +14,7 @@ int check_file_extension(char *filename)
     return (1);
 }
 
-int check_file_acces(char *filename)
+int check_file_access(char *filename)
 {   
     int fd;
 

@@ -8,8 +8,8 @@ Apply to Prompt.txt
 
 2. PARSING (3-4 jours)
 
-[ ] Lecture du fichier .cub
-Vérification de l'extension
+[ ] Lecture du fichier .cub //done
+Vérification de l'extension //done
 Ouverture et lecture du fichier
 [ ] Parser les textures (NO, SO, WE, EA)
 Validation des chemins

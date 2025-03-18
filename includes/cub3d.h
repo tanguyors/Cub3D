@@ -49,8 +49,11 @@ typedef struct s_game
 /* Parsing functions */
 int		check_file_extension(char *filename);
 int		check_file_access(char *filename);
-int     parse_textures(t_game *game, int fd);
-int     parse_colors(t_game *game, int fd);
 int     parse_map(t_game *game, int fd);
+int     is_valid_char(char c);
+int     check_map_borders(t_map *map);
+int     count_player(t_map *map);
+int     check_map_chars(t_game *game);
+
 
 #endif
