@@ -10,7 +10,7 @@ Apply to Prompt.txt
 
 [ ] Lecture du fichier .cub //done
 Vérification de l'extension //done
-Ouverture et lecture du fichier
+Ouverture et lecture du fichier // done
 [ ] Parser les textures (NO, SO, WE, EA)
 Validation des chemins
 Vérification du format
@@ -18,9 +18,9 @@ Vérification du format
 Validation du format RGB
 Conversion en valeurs utilisables
 [ ] Parser la carte
-Validation des caractères (1,0,N,S,E,W)
-Vérification de la fermeture des murs
-Validation de la position du joueur
+Validation des caractères (1,0,N,S,E,W) // done
+Vérification de la fermeture des murs // done
+Validation de la position du joueur // done
 
 3. INITIALISATION GRAPHIQUE (2-3 jours)
 
