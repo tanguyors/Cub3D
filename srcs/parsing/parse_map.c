@@ -29,17 +29,52 @@ static char	*handle_line(char *line, char *temp_map, size_t *max_width)
 	return (temp_map);
 }
 
+static int is_map_line(char *line)
+{
+	int i;
+	
+	if (!line || ft_strlen(line) == 0)
+		return (0);
+		
+	if (is_texture_identifier(line) || is_color_identifier(line))
+		return (0);
+		
+	i = 0;
+	while (line[i])
+	{
+		if (line[i] == '1')
+			return (1);
+		i++;
+	}
+	
+	return (0);
+}
+
 static char	*read_map_lines(t_game *game, int fd, size_t *max_width)
 {
 	char	*line;
 	char	*temp_map;
+	int		map_started = 0;
 
 	temp_map = NULL;
 	*max_width = 0;
 	while ((line = get_next_line(fd)) != NULL)
 	{
-		temp_map = handle_line(line, temp_map, max_width);
-		game->map.height++;
+		if (line[ft_strlen(line) - 1] == '\n')
+			line[ft_strlen(line) - 1] = '\0';
+			
+		if (is_map_line(line))
+		{
+			if (map_started && ft_strlen(line) == 0)
+				break;
+				
+			map_started = 1;
+			temp_map = handle_line(line, temp_map, max_width);
+			game->map.height++;
+		}
+		else if (map_started)
+			break;
+			
 		free(line);
 	}
 	if (!temp_map || game->map.height == 0)

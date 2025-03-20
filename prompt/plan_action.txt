@@ -12,11 +12,11 @@ Apply to Prompt.txt
 Vérification de l'extension //done
 Ouverture et lecture du fichier // done
 [ ] Parser les textures (NO, SO, WE, EA)
-Validation des chemins
-Vérification du format
+Validation des chemins //done
+Vérification du format // done
 [ ] Parser les couleurs (F, C)
-Validation du format RGB
-Conversion en valeurs utilisables
+Validation du format RGB //done
+Conversion en valeurs utilisables //done
 [ ] Parser la carte
 Validation des caractères (1,0,N,S,E,W) // done
 Vérification de la fermeture des murs // done

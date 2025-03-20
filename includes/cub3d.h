@@ -54,6 +54,11 @@ int     is_valid_char(char c);
 int     check_map_borders(t_map *map);
 int     count_player(t_map *map);
 int     check_map_chars(t_game *game);
-
+int		parse_textures(t_game *game, int fd);
+int		parse_colors(t_game *game, int fd);
+void	free_tab(char **tab);
+int parse_game_data(t_game *game, int argc, char **argv);
+int is_texture_identifier(char *line);
+int is_color_identifier(char *line);
 
 #endif

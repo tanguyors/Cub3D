@@ -11,7 +11,11 @@ INCLUDES	= -I includes/ -I $(LIBFT_PATH) -I$(MLX_PATH)
 
 SRCS		= srcs/main.c \
 			  srcs/parsing/check_file.c \
-			  srcs/parsing/parse_map.c
+			  srcs/parsing/parse_map.c \
+			  srcs/parsing/parse_textures.c \
+			  srcs/parsing/parse_colors.c \
+			  srcs/parsing/parsing.c \
+			  srcs/utils/free.c
 
 OBJS		= $(SRCS:.c=.o)
 
