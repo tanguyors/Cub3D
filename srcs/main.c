@@ -25,20 +25,9 @@ int	main(int argc, char **argv)
     if (!parse_game_data(&game, argc, argv))
         return (1);
 
-    // Initialisation de la MLX
-    game.mlx = mlx_init();
-    if (!game.mlx)
+    // Initialisation des graphiques
+    if (!init_graphics(&game))
     {
-        ft_putstr_fd("Error\nFailed to initialize MLX\n", 2);
-        // Libérer la mémoire allouée
-        return (1);
-    }
-
-    // Création de la fenêtre
-    game.win = mlx_new_window(game.mlx, 800, 600, "cub3D");
-    if (!game.win)
-    {
-        ft_putstr_fd("Error\nFailed to create window\n", 2);
         // Libérer la mémoire allouée
         return (1);
     }

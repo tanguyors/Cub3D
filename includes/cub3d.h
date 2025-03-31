@@ -8,6 +8,19 @@
 # include <math.h>
 # include "libft.h"
 
+/* Key codes */
+# define KEY_ESC    65307
+# define KEY_W      119
+# define KEY_A      97
+# define KEY_S      115
+# define KEY_D      100
+# define KEY_LEFT   65361
+# define KEY_RIGHT  65363
+
+/* Movement and rotation speeds */
+# define MOVE_SPEED 0.1
+# define ROT_SPEED  0.05
+
 /* Structure pour les coordonnées */
 typedef struct s_pos
 {
@@ -34,16 +47,44 @@ typedef struct s_map
     int		ceiling_color;
 }   t_map;
 
+
+typedef struct s_img
+{
+    void    *img_ptr;          // Pointeur vers l'image MLX
+    char    *img_data;         // Pointeur vers les données de l'image (pixels)
+    int     bits_per_pixel;    // Nombre de bits par pixel (généralement 32)
+    int     line_length;       // Nombre d'octets par ligne
+    int     endian;           // Format des couleurs (petit ou grand-endian)
+    int     width;            // Largeur de l'image en pixels
+    int     height;           // Hauteur de l'image en pixels            
+}   t_img;
+
+/* Structure pour l'état des touches */
+typedef struct s_keys
+{
+    int     w_pressed;
+    int     a_pressed;
+    int     s_pressed;
+    int     d_pressed;
+    int     left_pressed;
+    int     right_pressed;
+}   t_keys;
+
 /* Structure principale */
 typedef struct s_game
 {
-    void		*mlx;
-    void		*win;
-    t_map		map;
-    t_texture	textures[4]; // NO, SO, WE, EA
-    t_pos		player_pos;
-    double		player_dir;
-    // Autres variables à ajouter selon les besoins
+    void        *mlx;
+    void        *win;
+    t_map       map;
+    t_texture   textures[4]; // NO, SO, WE, EA
+    t_pos       player_pos;
+    double      player_dir;
+    int         win_width;        // largeur de la window
+    int         win_height;       // hauteur de la window
+    t_img       screen;          // image principal pour le rendu
+    t_keys      keys;           // état des touches
+    double      move_speed;     // vitesse de déplacement
+    double      rot_speed;      // vitesse de rotation
 }   t_game;
 
 /* Parsing functions */
@@ -60,5 +101,5 @@ void	free_tab(char **tab);
 int parse_game_data(t_game *game, int argc, char **argv);
 int is_texture_identifier(char *line);
 int is_color_identifier(char *line);
-
+int init_graphics(t_game *game);
 #endif

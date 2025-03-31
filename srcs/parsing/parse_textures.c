@@ -4,8 +4,12 @@ int	is_texture_identifier(char *line)
 {
 	if (!line || ft_strlen(line) < 3)
 		return (0);
-	if (!ft_strncmp(line, "NO ", 3) || !ft_strncmp(line, "SO ", 3) ||
-		!ft_strncmp(line, "WE ", 3) || !ft_strncmp(line, "EA ", 3))
+	
+	// Vérifier le premier caractère et le second séparément
+	if ((line[0] == 'N' && line[1] == 'O' && line[2] == ' ') ||
+		(line[0] == 'S' && line[1] == 'O' && line[2] == ' ') ||
+		(line[0] == 'W' && line[1] == 'E' && line[2] == ' ') ||
+		(line[0] == 'E' && line[1] == 'A' && line[2] == ' '))
 		return (1);
 	return (0);
 }

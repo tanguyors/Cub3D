@@ -14,7 +14,7 @@ Ouverture et lecture du fichier // done
 [ ] Parser les textures (NO, SO, WE, EA)
 Validation des chemins //done
 Vérification du format // done
-[ ] Parser les couleurs (F, C)
+[ ] Parser les couleurs (F, C) //done
 Validation du format RGB //done
 Conversion en valeurs utilisables //done
 [ ] Parser la carte
@@ -25,12 +25,12 @@ Validation de la position du joueur // done
 3. INITIALISATION GRAPHIQUE (2-3 jours)
 
 [ ] Configuration de la MiniLibX
-Création de la fenêtre
+Création de la fenêtre //done
 Initialisation des images
 [ ] Gestion des événements
 Mouvements (WASD)
 Rotation (flèches)
-Fermeture (ESC et croix)
+Fermeture (ESC et croix) //done
 [ ] Mise en place de la boucle principale
 
 4. MOTEUR DE RAY-CASTING (5-7 jours)

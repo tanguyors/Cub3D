@@ -15,7 +15,9 @@ SRCS		= srcs/main.c \
 			  srcs/parsing/parse_textures.c \
 			  srcs/parsing/parse_colors.c \
 			  srcs/parsing/parsing.c \
-			  srcs/utils/free.c
+			  srcs/utils/free.c \
+			  srcs/graphics/init_graphics.c \
+			  srcs/events/handle_events.c
 
 OBJS		= $(SRCS:.c=.o)
 
