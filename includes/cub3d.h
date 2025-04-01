@@ -70,6 +70,19 @@ typedef struct s_keys
     int     right_pressed;
 }   t_keys;
 
+
+   // Position et direction du joueur
+typedef struct s_player 
+{
+       double x;          // Position X
+       double y;          // Position Y
+       double dir_x;      // Vecteur de direction X
+       double dir_y;      // Vecteur de direction Y
+       double plane_x;    // Vecteur du plan de caméra X
+       double plane_y;    // Vecteur du plan de caméra Y
+   } t_player;
+
+
 /* Structure principale */
 typedef struct s_game
 {
@@ -110,5 +123,18 @@ int     handle_keyrelease(int keycode, t_game *game);
 int     close_window(t_game *param);
 void    free_game(t_game *game);
 void free_textures(t_game *game);
+
+// Fonctions de mouvement
+void move_forward(t_game *game);
+void move_backward(t_game *game);
+void move_left(t_game *game);
+void move_right(t_game *game);
+
+// Fonctions de rotation
+void rotate_left(t_game *game);
+void rotate_right(t_game *game);
+
+// Fonction de vérification de collision
+int check_collision(t_game *game, double new_x, double new_y);
 
 #endif
