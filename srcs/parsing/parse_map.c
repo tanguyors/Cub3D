@@ -66,21 +66,20 @@ static char	*read_map_lines(t_game *game, int fd, size_t *max_width)
 		if (is_map_line(line))
 		{
 			if (map_started && ft_strlen(line) == 0)
+			{
+				free(line);
 				break;
-				
+			}
 			map_started = 1;
 			temp_map = handle_line(line, temp_map, max_width);
 			game->map.height++;
 		}
 		else if (map_started)
+		{
+			free(line);
 			break;
-			
+		}
 		free(line);
-	}
-	if (!temp_map || game->map.height == 0)
-	{
-		ft_putstr_fd("Error\nEmpty map file\n", 2);
-		return (NULL);
 	}
 	return (temp_map);
 }

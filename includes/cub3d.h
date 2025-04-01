@@ -102,4 +102,13 @@ int parse_game_data(t_game *game, int argc, char **argv);
 int is_texture_identifier(char *line);
 int is_color_identifier(char *line);
 int init_graphics(t_game *game);
+
+/* Events functions */
+int     handle_keypress(int keycode, t_game *game);
+int     handle_keyrelease(int keycode, t_game *game);
+
+int     close_window(t_game *param);
+void    free_game(t_game *game);
+void free_textures(t_game *game);
+
 #endif

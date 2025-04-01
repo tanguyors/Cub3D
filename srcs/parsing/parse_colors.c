@@ -73,8 +73,7 @@ static int	parse_color_line(t_game *game, char *line)
 	if (!rgb_split || !is_valid_rgb(rgb_split))
 	{
 		ft_printf("Erreur: Format RGB invalide\n");
-		if (split)
-			free_tab(split);
+		free_tab(split);
 		if (rgb_split)
 			free_tab(rgb_split);
 		return (0);
@@ -115,6 +114,8 @@ int	parse_colors(t_game *game, int fd)
 		ft_printf("Erreur: Il manque des définitions de couleurs\n");
 		return (0);
 	}
+	if (line)
+		free(line);
 	return (1);
 }
 

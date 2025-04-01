@@ -1,21 +1,14 @@
 #include "cub3d.h"
 
 // Fonction pour gérer la fermeture propre du programme
-int	close_window(void *param)
+int	close_window(t_game *param)
 {
-    (void)param;  // Indiquer que le paramètre est intentionnellement non utilisé
+    if (param)
+        free_game(param);
     exit(0);
     return (0);
 }
 
-// Fonction pour gérer les touches du clavier
-int	key_hook(int keycode, void *param)
-{
-    (void)param;  // Indiquer que le paramètre est intentionnellement non utilisé
-    if (keycode == 65307) // ESC key
-        exit(0);
-    return (0);
-}
 
 int	main(int argc, char **argv)
 {
@@ -28,16 +21,15 @@ int	main(int argc, char **argv)
     // Initialisation des graphiques
     if (!init_graphics(&game))
     {
-        // Libérer la mémoire allouée
+        free_game(&game);
         return (1);
     }
 
     // Configuration des hooks pour les événements
-    mlx_hook(game.win, 17, 0, close_window, &game); // Hook pour la fermeture de la fenêtre
-    mlx_key_hook(game.win, key_hook, &game);        // Hook pour les touches du clavier
-
-    // Boucle principale
+    mlx_hook(game.win, 2, 1L<<0, handle_keypress, &game);
+    mlx_hook(game.win, 3, 1L<<1, handle_keyrelease, &game);
+    mlx_hook(game.win, 17, 0, close_window, &game);
     mlx_loop(game.mlx);
-
+    free_game(&game);
     return (0);
 }

@@ -73,13 +73,8 @@ int	parse_textures(t_game *game, int fd)
 		}
 		free(line);
 	}
-	/* Commentez temporairement la vérification
-	if (texture_count != 4)
-	{
-		ft_printf("Erreur: Il manque des textures\n");
-		return (0);
-	}
-	*/
+	if (line)
+		free(line);
 	return (1);
 }
 
