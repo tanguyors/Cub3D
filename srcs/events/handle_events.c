@@ -1,19 +1,31 @@
-#include "../../includes/cub3d.h"
+#include "cub3d.h"
 
 /* Fonction pour gérer l'appui sur une touche */
 int handle_keypress(int keycode, t_game *game)
 {
     printf("Touche pressée: %d\n", keycode);
-    if (keycode == KEY_ESC)
-        close_window(game);
-    else if (keycode == KEY_W)
+    if (keycode == KEY_W)
+    {
+        printf("W pressée\n");
         game->keys.w = 1;
-    else if (keycode == KEY_S)
-        game->keys.s = 1;
+    }
     else if (keycode == KEY_A)
+    {
+        printf("A pressée\n");
         game->keys.a = 1;
+    }
+    else if (keycode == KEY_S)
+    {
+        printf("S pressée\n");
+        game->keys.s = 1;
+    }
     else if (keycode == KEY_D)
+    {
+        printf("D pressée\n");
         game->keys.d = 1;
+    }
+    else if (keycode == KEY_ESC)
+        close_window(game);
     else if (keycode == KEY_LEFT)
         game->keys.left = 1;
     else if (keycode == KEY_RIGHT)

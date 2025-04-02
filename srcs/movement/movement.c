@@ -3,12 +3,10 @@
 /* Check collision */
 int check_collision(t_game *game, double new_x, double new_y)
 {
-    printf("Check collision: (%f, %f) -> Map: %c\n", 
-           new_x, new_y, game->map.grid[(int)new_y][(int)new_x]);
-    
-    if (game->map.grid[(int)new_y][(int)new_x] == '1')
-        return (1);
-    return (0);
+    (void)game;   // Indique que ces paramètres ne sont pas utilisés
+    (void)new_x;  // intentionnellement 
+    (void)new_y;
+    return (0);   // Désactiver temporairement les collisions pour tester
 }
 
 /* Mouvement vers l'avant */
