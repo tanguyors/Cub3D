@@ -60,27 +60,26 @@ typedef struct s_img
 }   t_img;
 
 /* Structure pour l'état des touches */
+typedef struct s_player
+{
+    double  pos_x;      // Position X du joueur
+    double  pos_y;      // Position Y du joueur
+    double  dir_x;      // Vecteur direction X
+    double  dir_y;      // Vecteur direction Y
+    double  plane_x;    // Plan caméra X
+    double  plane_y;    // Plan caméra Y
+}   t_player;
+
 typedef struct s_keys
 {
-    int     w_pressed;
-    int     a_pressed;
-    int     s_pressed;
-    int     d_pressed;
-    int     left_pressed;
-    int     right_pressed;
+    int     w;          // Avancer
+    int     s;          // Reculer
+    int     a;          // Gauche
+    int     d;          // Droite
+    int     left;       // Rotation gauche
+    int     right;      // Rotation droite
+    int     esc;        // Quitter
 }   t_keys;
-
-
-   // Position et direction du joueur
-typedef struct s_player 
-{
-       double x;          // Position X
-       double y;          // Position Y
-       double dir_x;      // Vecteur de direction X
-       double dir_y;      // Vecteur de direction Y
-       double plane_x;    // Vecteur du plan de caméra X
-       double plane_y;    // Vecteur du plan de caméra Y
-   } t_player;
 
 
 /* Structure principale */
