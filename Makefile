@@ -17,7 +17,8 @@ SRCS		= srcs/main.c \
 			  srcs/parsing/parsing.c \
 			  srcs/utils/free.c \
 			  srcs/graphics/init_graphics.c \
-			  srcs/events/handle_events.c
+			  srcs/events/handle_events.c \
+			  srcs/movement/movement.c
 
 OBJS		= $(SRCS:.c=.o)
 

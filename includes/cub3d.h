@@ -90,6 +90,7 @@ typedef struct s_game
     t_map       map;
     t_texture   textures[4]; // NO, SO, WE, EA
     t_pos       player_pos;
+    t_player    player;
     double      player_dir;
     int         win_width;        // largeur de la window
     int         win_height;       // hauteur de la window
@@ -135,5 +136,8 @@ void rotate_right(t_game *game);
 
 // Fonction de vérification de collision
 int check_collision(t_game *game, double new_x, double new_y);
+
+// Ajouter la déclaration de update_movements
+void    update_movements(t_game *game);
 
 #endif
