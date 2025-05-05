@@ -52,6 +52,28 @@ static int init_screen_image(t_game *game)
     return (1);
 }
 
+int load_texture(t_game *game, int index)
+{
+    int w, h;
+    if (!game->textures[index].path)
+        return (0);
+    game->textures[index].img = mlx_xpm_file_to_image(
+        game->mlx,
+        game->textures[index].path,
+        &w,
+        &h
+    );
+    if (!game->textures[index].img)
+    {
+        ft_printf("Erreur chargement texture %s\n", game->textures[index].path);
+        return (0);
+    }
+    ft_printf("Texture %d chargée : %s (%dx%d)\n", index, game->textures[index].path, w, h);
+    game->textures[index].width = w;
+    game->textures[index].height = h;
+    return (1);
+}
+
 int init_graphics(t_game *game)
 {
     // Initialiser la fenêtre
@@ -68,6 +90,14 @@ int init_graphics(t_game *game)
         // Nettoyer la fenêtre
         mlx_destroy_window(game->mlx, game->win);
         return (0);
+    }
+
+    int i = 0;
+    while (i < 4)
+    {
+        if (!load_texture(game, i))
+            return (0);
+        i++;
     }
 
     return (1);

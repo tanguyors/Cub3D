@@ -54,13 +54,13 @@ int handle_keyrelease(int keycode, t_game *game)
 /* Fonction pour mettre à jour la position du joueur à chaque frame */
 void update_movements(t_game *game)
 {
-    printf("Keys: W=%d S=%d A=%d D=%d LEFT=%d RIGHT=%d\n", 
-           game->keys.w, game->keys.s, game->keys.a, 
-           game->keys.d, game->keys.left, game->keys.right);
+   // printf("Keys: W=%d S=%d A=%d D=%d LEFT=%d RIGHT=%d\n", 
+          // game->keys.w, game->keys.s, game->keys.a, 
+           //game->keys.d, game->keys.left, game->keys.right);
     
-    printf("Position avant: x=%.2f, y=%.2f | Direction: dx=%.2f, dy=%.2f\n",
-           game->player.pos_x, game->player.pos_y,
-           game->player.dir_x, game->player.dir_y);
+    //printf("Position avant: x=%.2f, y=%.2f | Direction: dx=%.2f, dy=%.2f\n",
+          // game->player.pos_x, game->player.pos_y,
+           //game->player.dir_x, game->player.dir_y);
     
     if (game->keys.w)
     {
@@ -93,7 +93,7 @@ void update_movements(t_game *game)
         rotate_right(game);
     }
     
-    printf("Position après: x=%.2f, y=%.2f | Direction: dx=%.2f, dy=%.2f\n",
-           game->player.pos_x, game->player.pos_y,
-           game->player.dir_x, game->player.dir_y);
+    //printf("Position après: x=%.2f, y=%.2f | Direction: dx=%.2f, dy=%.2f\n",
+           //game->player.pos_x, game->player.pos_y,
+         //  game->player.dir_x, game->player.dir_y);
 }

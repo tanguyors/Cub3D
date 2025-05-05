@@ -28,8 +28,8 @@ Validation de la position du joueur // done
 Création de la fenêtre //done
 Initialisation des images
 [ ] Gestion des événements
-Mouvements (WASD)
-Rotation (flèches)
+Mouvements (WASD) //done
+Rotation (flèches) //done
 Fermeture (ESC et croix) //done
 [ ] Mise en place de la boucle principale
 

@@ -10,7 +10,7 @@ int	close_window(t_game *param)
 }
 
 /* Fonction de boucle principale pour tester les mouvements */
-int game_loop(void *param)
+/*int game_loop(void *param)
 {
     t_game *game;
     
@@ -20,9 +20,9 @@ int game_loop(void *param)
     update_movements(game);
     
     // Afficher la position actuelle du joueur (pour test)
-    printf("Position: x=%.2f, y=%.2f | Direction: dx=%.2f, dy=%.2f\n",
-           game->player.pos_x, game->player.pos_y,
-           game->player.dir_x, game->player.dir_y);
+    //printf("Position: x=%.2f, y=%.2f | Direction: dx=%.2f, dy=%.2f\n",
+           //game->player.pos_x, game->player.pos_y,
+           //game->player.dir_x, game->player.dir_y);
     
     // Effacer l'écran
     mlx_clear_window(game->mlx, game->win);
@@ -32,6 +32,21 @@ int game_loop(void *param)
     int y = (int)(game->player.pos_y * 20);
     mlx_string_put(game->mlx, game->win, x, y, 0xFFFFFF, "P");
     
+    return (0);
+}*/
+int game_loop(void *param)
+{
+    t_game *game = (t_game *)param;
+
+    mlx_clear_window(game->mlx, game->win);
+
+    // Test pixel rouge
+    mlx_pixel_put(game->mlx, game->win, 10, 10, 0xFF0000);
+
+    // Test image XPM
+    if (game->textures[0].img)
+        mlx_put_image_to_window(game->mlx, game->win, game->textures[0].img, 100, 100);
+
     return (0);
 }
 
@@ -43,7 +58,7 @@ int main(int argc, char **argv)
     ft_memset(&game, 0, sizeof(t_game));
     
     // Parser les données du jeu
-    if (parse_game_data(&game, argc, argv) == -1)
+    if (!parse_game_data(&game, argc, argv))
         return (1);
     
     // Initialiser les graphiques
