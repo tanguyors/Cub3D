@@ -29,16 +29,14 @@ static char	*handle_line(char *line, char *temp_map, size_t *max_width)
 	return (temp_map);
 }
 
-static int is_map_line(char *line)
+static int	is_map_line(char *line)
 {
-	int i;
-	
+	int	i;
+
 	if (!line || ft_strlen(line) == 0)
 		return (0);
-		
 	if (is_texture_identifier(line) || is_color_identifier(line))
 		return (0);
-		
 	i = 0;
 	while (line[i])
 	{
@@ -46,7 +44,6 @@ static int is_map_line(char *line)
 			return (1);
 		i++;
 	}
-	
 	return (0);
 }
 
@@ -54,21 +51,21 @@ static char	*read_map_lines(t_game *game, int fd, size_t *max_width)
 {
 	char	*line;
 	char	*temp_map;
-	int		map_started = 0;
+	int		map_started;
 
+	map_started = 0;
 	temp_map = NULL;
 	*max_width = 0;
 	while ((line = get_next_line(fd)) != NULL)
 	{
 		if (line[ft_strlen(line) - 1] == '\n')
 			line[ft_strlen(line) - 1] = '\0';
-			
 		if (is_map_line(line))
 		{
 			if (map_started && ft_strlen(line) == 0)
 			{
 				free(line);
-				break;
+				break ;
 			}
 			map_started = 1;
 			temp_map = handle_line(line, temp_map, max_width);
@@ -77,7 +74,7 @@ static char	*read_map_lines(t_game *game, int fd, size_t *max_width)
 		else if (map_started)
 		{
 			free(line);
-			break;
+			break ;
 		}
 		free(line);
 	}
@@ -125,6 +122,40 @@ static int	normalize_map_lines(t_game *game)
 	return (1);
 }
 
+static int	parse_player_position(t_game *game)
+{
+	int		player_count;
+	char	c;
+
+	player_count = 0;
+	for (int y = 0; y < game->map.height; y++)
+	{
+		for (int x = 0; x < game->map.width; x++)
+		{
+			c = game->map.grid[y][x];
+			if (c == 'N' || c == 'S' || c == 'E' || c == 'W')
+			{
+				if (player_count > 0)
+				{
+					ft_putstr_fd("Error\nMultiple player start positions\n", 2);
+					return (0);
+				}
+				game->player_pos.x = x + 0.5; // Center in tile
+				game->player_pos.y = y + 0.5;
+				game->player_dir = c;
+				// game->map.grid[y][x] = '0'; // Replace with floor
+				player_count++;
+			}
+		}
+	}
+	if (player_count == 0)
+	{
+		ft_putstr_fd("Error\nNo player start position found\n", 2);
+		return (0);
+	}
+	return (1);
+}
+
 int	parse_map(t_game *game, int fd)
 {
 	char	*temp_map;
@@ -142,6 +173,8 @@ int	parse_map(t_game *game, int fd)
 		return (0);
 	if (!normalize_map_lines(game))
 		return (0);
+	if (!parse_player_position(game))
+		return (0);
 	if (!check_map_chars(game))
 	{
 		ft_putstr_fd("Error\nInvalid character in map\n", 2);
@@ -152,8 +185,8 @@ int	parse_map(t_game *game, int fd)
 
 int	is_valid_char(char c)
 {
-	return (c == '0' || c == '1' || c == 'N' || c == 'S' || 
-		c == 'E' || c == 'W' || c == ' ');
+	return (c == '0' || c == '1' || c == 'N' || c == 'S' || c == 'E' || c == 'W'
+		|| c == ' ');
 }
 
 static int	validate_player_count(int player_count)
@@ -182,12 +215,12 @@ int	check_map_chars(t_game *game)
 		{
 			if (!is_valid_char(game->map.grid[i][j]))
 			{
-				ft_printf("Invalid char '%c' (ASCII: %d) at [%d][%d]\n", 
+				ft_printf("Invalid char '%c' (ASCII: %d) at [%d][%d]\n",
 					game->map.grid[i][j], (int)game->map.grid[i][j], i, j);
 				return (0);
 			}
-			if (game->map.grid[i][j] == 'N' || game->map.grid[i][j] == 'S' ||
-				game->map.grid[i][j] == 'E' || game->map.grid[i][j] == 'W')
+			if (game->map.grid[i][j] == 'N' || game->map.grid[i][j] == 'S'
+				|| game->map.grid[i][j] == 'E' || game->map.grid[i][j] == 'W')
 				player_count++;
 			j++;
 		}
@@ -210,8 +243,8 @@ static int	check_horizontal_borders(t_map *map)
 	j = 0;
 	while (j < map->width)
 	{
-		if (is_space_or_player(map->grid[0][j]) || 
-			is_space_or_player(map->grid[map->height - 1][j]))
+		if (is_space_or_player(map->grid[0][j])
+			|| is_space_or_player(map->grid[map->height - 1][j]))
 			return (0);
 		j++;
 	}
@@ -225,8 +258,8 @@ static int	check_vertical_borders(t_map *map)
 	i = 0;
 	while (i < map->height)
 	{
-		if (is_space_or_player(map->grid[i][0]) || 
-			is_space_or_player(map->grid[i][map->width - 1]))
+		if (is_space_or_player(map->grid[i][0])
+			|| is_space_or_player(map->grid[i][map->width - 1]))
 			return (0);
 		i++;
 	}
@@ -246,8 +279,8 @@ static int	check_spaces_around(t_map *map)
 		{
 			if (is_space_or_player(map->grid[i][j]))
 			{
-				if (map->grid[i-1][j] == ' ' || map->grid[i+1][j] == ' ' ||
-					map->grid[i][j-1] == ' ' || map->grid[i][j+1] == ' ')
+				if (map->grid[i - 1][j] == ' ' || map->grid[i + 1][j] == ' '
+					|| map->grid[i][j - 1] == ' ' || map->grid[i][j + 1] == ' ')
 					return (0);
 			}
 			j++;
