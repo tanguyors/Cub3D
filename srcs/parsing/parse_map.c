@@ -136,7 +136,7 @@ int	parse_player_position(t_game *game)
 					ft_putstr_fd("Error\nMultiple player start positions\n", 2);
 					return (0);
 				}
-				game->player_pos.x = x + 0.5; // Center in tile
+				game->player_pos.x = x + 0.5;
 				game->player_pos.y = y + 0.5;
 				game->player_dir = c;
 				player_count++;
@@ -294,7 +294,6 @@ int	parse_map_content(t_game *game, char *map_content)
 	lines = ft_split(map_content, '\n');
 	if (!lines)
 		return (0);
-	// Count lines and find max width
 	game->map.height = 0;
 	max_width = 0;
 	i = 0;
@@ -307,15 +306,12 @@ int	parse_map_content(t_game *game, char *map_content)
 		i++;
 	}
 	game->map.width = max_width;
-	// Allocate and copy map grid
 	game->map.grid = lines;
-	// Normalize lines
 	if (!normalize_map_lines(game))
 	{
 		ft_printf("Error: Failed to normalize map lines\n");
 		return (0);
 	}
-	// Parse player position
 	if (!parse_player_position(game))
 	{
 		ft_printf("Error: Failed to parse player position\n");

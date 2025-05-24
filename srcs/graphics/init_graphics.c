@@ -66,7 +66,6 @@ int	init_graphics(t_game *game)
 {
 	int	i;
 
-	// Initialiser la fenêtre
 	if (!init_window(game))
 	{
 		ft_putstr_fd("Error\nFailed to initialize window\n", 2);

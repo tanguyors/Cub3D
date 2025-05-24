@@ -10,7 +10,6 @@ int	check_collision(t_game *game, double new_x, double new_y)
 	int		grid_x;
 	int		grid_y;
 
-	// Check 4 points around player (combat corner clipping)
 	for (int i = 0; i < 4; i++)
 	{
 		grid_x = (int)points[i].x;
@@ -87,7 +86,6 @@ void	rotate_left(t_game *game)
 
 	old_dir_x = game->player.dir_x;
 	old_plane_x = game->player.plane_x;
-	// Rotation de la direction
 	game->player.dir_x = game->player.dir_x * cos(-ROT_SPEED)
 		- game->player.dir_y * sin(-ROT_SPEED);
 	game->player.dir_y = old_dir_x * sin(-ROT_SPEED) + game->player.dir_y

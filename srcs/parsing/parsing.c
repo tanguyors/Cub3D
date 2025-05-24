@@ -1,7 +1,6 @@
 #include "cub3d.h"
 #include <fcntl.h>
 
-// Prototypes for functions used from other files
 int			parse_color_line(t_game *game, char *line);
 int			normalize_map_lines(t_game *game);
 int			parse_player_position(t_game *game);

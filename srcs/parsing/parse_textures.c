@@ -15,9 +15,8 @@ int	is_texture_identifier(char *line)
 		line++;
 	return (ft_strncmp(line, "NO ", 3) == 0 || ft_strncmp(line, "SO ", 3) == 0
 		|| ft_strncmp(line, "WE ", 3) == 0 || ft_strncmp(line, "EA ", 3) == 0
-		|| ft_strncmp(line, "FT ", 3) == 0 // Floor texture
+		|| ft_strncmp(line, "FT ", 3) == 0 
 			|| ft_strncmp(line, "CT ", 3) == 0);
-	// Ceiling texture
 }
 
 static int	get_texture_index(char *identifier)
