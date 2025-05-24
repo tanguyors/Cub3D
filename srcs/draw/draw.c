@@ -43,30 +43,37 @@ void	fill_image_rect(t_game *g, int color, t_rect rect)
 		}
 	}
 }
-void draw_wall_tile(t_game *g, int grid_x, int grid_y)
-{
-    t_rect wall_rect = {
-        .x = grid_x * TILE_SIZE,
-        .y = grid_y * TILE_SIZE,
-        .width = TILE_SIZE,
-        .height = TILE_SIZE};
-    fill_image_rect(g, 0x505050, wall_rect);
-}
 
 void	draw_map(t_game *g)
 {
+	int		x;
+	int		y;
+	t_rect	wall_rect;
+	int		tile_size;
+
+	// Calculate tile size based on minimap dimensions and map size
+	tile_size = fmin(MINIMAP_WIDTH / g->map.width, MINIMAP_HEIGHT
+			/ g->map.height);
 	// Base map color (non-walls)
 	fill_image_rect(g, 0x202020, (t_rect){0, 0, g->win_width, g->win_height});
 	// Draw walls
-	for (int y = 0; y < g->map.height; y++)
+	y = 0;
+	while (y < g->map.height)
 	{
-		for (int x = 0; x < g->map.width; x++)
+		x = 0;
+		while (x < g->map.width)
 		{
 			if (g->map.grid[y][x] == '1')
 			{
-				draw_wall_tile(g, x, y);
+				wall_rect.x = x * tile_size;
+				wall_rect.y = y * tile_size;
+				wall_rect.width = tile_size;
+				wall_rect.height = tile_size;
+				fill_image_rect(g, 0x505050, wall_rect);
 			}
+			x++;
 		}
+		y++;
 	}
 }
 
@@ -110,19 +117,23 @@ void	draw_line(t_game *g, t_point start, t_point end, int color)
 	}
 }
 
-void draw_player(t_game *g)
+void	draw_player(t_game *g)
 {
-    // Convert player position to screen coordinates
-    int px = g->player.pos_x * TILE_SIZE;
-    int py = g->player.pos_y * TILE_SIZE;
-    
-    // Draw player circle (5x5 pixels)
-    fill_image_circle(g, 0xFF0000, (t_point){px, py}, 3);
+	int		tile_size;
+	int		px;
+	int		py;
+	t_point	dir_end;
 
-    // Draw direction vector (20px length)
-    t_point dir_end = {
-        px + g->player.dir_x * 20,
-        py + g->player.dir_y * 20
-    };
-    draw_line(g, (t_point){px, py}, dir_end, 0x00FF00);
+	// Calculate tile size based on minimap dimensions and map size
+	tile_size = fmin(MINIMAP_WIDTH / g->map.width, MINIMAP_HEIGHT
+			/ g->map.height);
+	// Convert player position to screen coordinates
+	px = g->player.pos_x * tile_size;
+	py = g->player.pos_y * tile_size;
+	// Draw player circle (3 pixel radius)
+	fill_image_circle(g, 0xFF0000, (t_point){px, py}, 3);
+	// Draw direction vector (20px length)
+	dir_end.x = px + g->player.dir_x * 20;
+	dir_end.y = py + g->player.dir_y * 20;
+	draw_line(g, (t_point){px, py}, dir_end, 0x00FF00);
 }

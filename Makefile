@@ -20,6 +20,7 @@ SRCS		= srcs/main.c \
 			  srcs/events/handle_events.c \
 			  srcs/movement/movement.c \
 			  srcs/draw/draw.c \
+			  srcs/draw/raycasting.c \
 			  srcs/exit.c
 
 OBJS		= $(SRCS:.c=.o)

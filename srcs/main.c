@@ -82,7 +82,9 @@ void	init_game(t_game *g)
 	g->mlx = mlx_init();
 	if (!g->mlx)
 		exit_with_error(g, "MLX init failed");
-	// 2. Create window
+	// 2. Create window with main dimensions
+	g->win_width = MAIN_WIN_WIDTH;
+	g->win_height = MAIN_WIN_HEIGHT;
 	g->win = mlx_new_window(g->mlx, g->win_width, g->win_height, "Cub3D");
 	if (!g->win)
 		exit_with_error(g, "Window creation failed");
@@ -94,34 +96,65 @@ void	init_game(t_game *g)
 	g->screen.img_data = mlx_get_data_addr(g->screen.img_ptr,
 			&g->screen.bits_per_pixel, &g->screen.line_length,
 			&g->screen.endian);
-	// 5. Set initial direction vectors
-	set_initial_direction(g); // Critical for raycasting later
+	// 5. Load textures
+	for (int i = 0; i < 6; i++)
+	// Changed from 4 to 6 to include floor and ceiling
+	{
+		int w, h;
+		if (!g->textures[i].path)
+			exit_with_error(g, "Missing texture path");
+		g->textures[i].img = mlx_xpm_file_to_image(g->mlx, g->textures[i].path,
+				&w, &h);
+		if (!g->textures[i].img)
+			exit_with_error(g, "Failed to load texture");
+		g->textures[i].width = w;
+		g->textures[i].height = h;
+		g->textures[i].img_data = mlx_get_data_addr(g->textures[i].img,
+				&g->textures[i].bits_per_pixel, &g->textures[i].line_length,
+				&g->textures[i].endian);
+		printf("Loaded texture %d: %s (%dx%d)\n", i, g->textures[i].path, w, h);
+	}
+	// 6. Initialize movement speeds
+	g->move_speed = MOVE_SPEED;
+	g->rot_speed = ROT_SPEED;
+	// 7. Initialize key states
+	ft_memset(&g->keys, 0, sizeof(t_keys));
 }
 
-void	render_2d(t_game *g)
+void	render_minimap(t_game *g)
 {
+	int	orig_width;
+	int	orig_height;
+
+	// Save original window dimensions
+	orig_width = g->win_width;
+	orig_height = g->win_height;
+	// Temporarily set window dimensions to minimap size
+	g->win_width = MINIMAP_WIDTH;
+	g->win_height = MINIMAP_HEIGHT;
+	// Draw the minimap
 	draw_map(g);
 	draw_player(g);
-	mlx_put_image_to_window(g->mlx, g->win, g->screen.img_ptr, 0, 0);
+	// Restore original dimensions
+	g->win_width = orig_width;
+	g->win_height = orig_height;
 }
 
 int	game_loop(t_game *game)
 {
 	// Handle continuous movement
-	if (game->keys.w)
-		move_forward(game);
-	if (game->keys.s)
-		move_backward(game);
-	if (game->keys.a)
-		move_left(game);
-	if (game->keys.d)
-		move_right(game);
-	if (game->keys.left)
-		rotate_left(game);
-	if (game->keys.right)
-		rotate_right(game);
-	// Clear and redraw frame
-	render_2d(game);
+	update_movements(game);
+	// Clear screen
+	fill_image_rect(game, game->map.ceiling_color, (t_rect){0, 0,
+		game->win_width, game->win_height / 2});
+	fill_image_rect(game, game->map.floor_color, (t_rect){0, game->win_height
+		/ 2, game->win_width, game->win_height / 2});
+	// Render 3D view
+	render_3d(game);
+	// Render minimap in top-left corner
+	render_minimap(game);
+	// Update screen
+	mlx_put_image_to_window(game->mlx, game->win, game->screen.img_ptr, 0, 0);
 	return (0);
 }
 
@@ -134,32 +167,24 @@ int	main(int argc, char **argv)
 	// Parser les données du jeu
 	if (!parse_game_data(&game, argc, argv))
 		return (1);
-	// Initialiser les graphiques
-	if (init_graphics(&game) == -1)
-		return (1);
-	// Après parse_game_data
-	printf("Position du joueur sur la carte: x=%.2f, y=%.2f\n",
-		game.player_pos.x, game.player_pos.y);
-	// Initialiser la structure du joueur
+	// Initialize game (includes graphics)
+	init_game(&game);
+	// Set initial player position and direction
 	game.player.pos_x = game.player_pos.x;
 	game.player.pos_y = game.player_pos.y;
-	// Définir une direction par défaut si nécessaire
-	if (game.player.dir_x == 0 && game.player.dir_y == 0)
-	{
-		game.player.dir_x = 1.0; // Regardant vers l'est par défaut
-		game.player.dir_y = 0.0;
-		game.player.plane_x = 0.0;
-		game.player.plane_y = 0.66;
-	}
-	init_game(&game);
+	set_initial_direction(&game);
+	printf("Position du joueur sur la carte: x=%.2f, y=%.2f\n",
+		game.player.pos_x, game.player.pos_y);
+	printf("Direction du joueur: %c (%.2f, %.2f)\n", (int)game.player_dir,
+		game.player.dir_x, game.player.dir_y);
+	printf("Floor color: 0x%06X\n", game.map.floor_color);
+	printf("Ceiling color: 0x%06X\n", game.map.ceiling_color);
 	// Configurer les hooks pour les événements
 	printf("\n\n=== INITIALISATION DES HOOKS ===\n\n");
 	mlx_hook(game.win, 2, 1L << 0, handle_keypress, &game);
 	printf("Hook keypress configuré\n");
 	mlx_hook(game.win, 3, 1L << 1, handle_keyrelease, &game);
-	// Relâchement de touches
 	mlx_hook(game.win, 17, 0, close_window, &game);
-	// Fermeture fenêtre
 	// Configurer la boucle principale
 	mlx_loop_hook(game.mlx, game_loop, &game);
 	// Lancer la boucle MLX

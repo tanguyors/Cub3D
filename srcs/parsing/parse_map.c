@@ -29,22 +29,19 @@ static char	*handle_line(char *line, char *temp_map, size_t *max_width)
 	return (temp_map);
 }
 
-static int	is_map_line(char *line)
+int	is_map_line(char *line)
 {
 	int	i;
 
 	if (!line || ft_strlen(line) == 0)
 		return (0);
-	if (is_texture_identifier(line) || is_color_identifier(line))
-		return (0);
 	i = 0;
-	while (line[i])
-	{
-		if (line[i] == '1')
-			return (1);
+	while (line[i] && (line[i] == ' ' || line[i] == '\t'))
 		i++;
-	}
-	return (0);
+	if (!line[i])
+		return (0);
+	return (line[i] == '1' || line[i] == '0' || line[i] == 'N' || line[i] == 'S'
+		|| line[i] == 'E' || line[i] == 'W');
 }
 
 static char	*read_map_lines(t_game *game, int fd, size_t *max_width)
@@ -62,11 +59,6 @@ static char	*read_map_lines(t_game *game, int fd, size_t *max_width)
 			line[ft_strlen(line) - 1] = '\0';
 		if (is_map_line(line))
 		{
-			if (map_started && ft_strlen(line) == 0)
-			{
-				free(line);
-				break ;
-			}
 			map_started = 1;
 			temp_map = handle_line(line, temp_map, max_width);
 			game->map.height++;
@@ -108,7 +100,7 @@ static int	normalize_line(t_game *game, int i)
 	return (1);
 }
 
-static int	normalize_map_lines(t_game *game)
+int	normalize_map_lines(t_game *game)
 {
 	int	i;
 
@@ -122,15 +114,19 @@ static int	normalize_map_lines(t_game *game)
 	return (1);
 }
 
-static int	parse_player_position(t_game *game)
+int	parse_player_position(t_game *game)
 {
 	int		player_count;
 	char	c;
+	int		x;
+	int		y;
 
 	player_count = 0;
-	for (int y = 0; y < game->map.height; y++)
+	y = 0;
+	while (y < game->map.height)
 	{
-		for (int x = 0; x < game->map.width; x++)
+		x = 0;
+		while (x < game->map.width)
 		{
 			c = game->map.grid[y][x];
 			if (c == 'N' || c == 'S' || c == 'E' || c == 'W')
@@ -143,10 +139,11 @@ static int	parse_player_position(t_game *game)
 				game->player_pos.x = x + 0.5; // Center in tile
 				game->player_pos.y = y + 0.5;
 				game->player_dir = c;
-				// game->map.grid[y][x] = '0'; // Replace with floor
 				player_count++;
 			}
+			x++;
 		}
+		y++;
 	}
 	if (player_count == 0)
 	{
@@ -189,24 +186,11 @@ int	is_valid_char(char c)
 		|| c == ' ');
 }
 
-static int	validate_player_count(int player_count)
-{
-	if (player_count != 1)
-	{
-		ft_printf("Error: Map must contain exactly one player position");
-		ft_printf(" (found %d)\n", player_count);
-		return (0);
-	}
-	return (1);
-}
-
 int	check_map_chars(t_game *game)
 {
 	int	i;
 	int	j;
-	int	player_count;
 
-	player_count = 0;
 	i = 0;
 	while (i < game->map.height)
 	{
@@ -219,14 +203,11 @@ int	check_map_chars(t_game *game)
 					game->map.grid[i][j], (int)game->map.grid[i][j], i, j);
 				return (0);
 			}
-			if (game->map.grid[i][j] == 'N' || game->map.grid[i][j] == 'S'
-				|| game->map.grid[i][j] == 'E' || game->map.grid[i][j] == 'W')
-				player_count++;
 			j++;
 		}
 		i++;
 	}
-	return (validate_player_count(player_count));
+	return (1);
 }
 
 static int	is_space_or_player(char c)
@@ -298,5 +279,49 @@ int	check_map_borders(t_map *map)
 		return (0);
 	if (!check_spaces_around(map))
 		return (0);
+	return (1);
+}
+
+int	parse_map_content(t_game *game, char *map_content)
+{
+	size_t	max_width;
+	char	**lines;
+	int		i;
+	size_t	len;
+
+	if (!map_content)
+		return (0);
+	lines = ft_split(map_content, '\n');
+	if (!lines)
+		return (0);
+	// Count lines and find max width
+	game->map.height = 0;
+	max_width = 0;
+	i = 0;
+	while (lines[i])
+	{
+		len = ft_strlen(lines[i]);
+		if (len > max_width)
+			max_width = len;
+		game->map.height++;
+		i++;
+	}
+	game->map.width = max_width;
+	// Allocate and copy map grid
+	game->map.grid = lines;
+	// Normalize lines
+	if (!normalize_map_lines(game))
+	{
+		ft_printf("Error: Failed to normalize map lines\n");
+		return (0);
+	}
+	// Parse player position
+	if (!parse_player_position(game))
+	{
+		ft_printf("Error: Failed to parse player position\n");
+		return (0);
+	}
+	printf("Found player at position: x=%.2f, y=%.2f, direction=%d\n",
+		game->player_pos.x, game->player_pos.y, (int)game->player_dir);
 	return (1);
 }

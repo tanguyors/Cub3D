@@ -18,13 +18,19 @@
 # define KEY_RIGHT 65363
 
 /* Movement and rotation speeds */
-# define MOVE_SPEED 0.1
-# define ROT_SPEED 0.05
+# define MOVE_SPEED 0.05
+# define ROT_SPEED 0.03
 
 /* Pixels per grid cell */
 # define TILE_SIZE 32
 /* Prevents wall clipping */
-#define PLAYER_RADIUS 0.2
+# define PLAYER_RADIUS 0.2
+
+/* Window dimensions */
+# define MAIN_WIN_WIDTH 1280
+# define MAIN_WIN_HEIGHT 720
+# define MINIMAP_WIDTH 200
+# define MINIMAP_HEIGHT 200
 
 /* Structure pour les coordonnées */
 typedef struct s_pos
@@ -36,10 +42,14 @@ typedef struct s_pos
 /* Structure pour les textures */
 typedef struct s_texture
 {
-	void		*img;
 	char		*path;
+	void		*img;
+	char		*img_data;
 	int			width;
 	int			height;
+	int			bits_per_pixel;
+	int			line_length;
+	int			endian;
 }				t_texture;
 
 /* Structure pour la map */
@@ -91,7 +101,7 @@ typedef struct s_game
 	void		*mlx;
 	void		*win;
 	t_map		map;
-	t_texture textures[4]; // NO, SO, WE, EA
+	t_texture textures[6]; // NO, SO, WE, EA, floor, ceiling
 	t_pos		player_pos;
 	t_player	player;
 	double		player_dir;
@@ -132,6 +142,8 @@ int				parse_game_data(t_game *game, int argc, char **argv);
 int				is_texture_identifier(char *line);
 int				is_color_identifier(char *line);
 int				init_graphics(t_game *game);
+int				parse_texture_line(t_game *game, char *line);
+int				parse_texture(t_game *game, char *line);
 
 /* Events functions */
 int				handle_keypress(int keycode, t_game *game);
@@ -160,5 +172,28 @@ void			update_movements(t_game *game);
 void			draw_map(t_game *g);
 void			draw_player(t_game *g);
 int				exit_with_error(t_game *g, const char *msg);
+
+/* Drawing functions */
+void			fill_image_circle(t_game *g, int color, t_point center,
+					int radius);
+void			fill_image_rect(t_game *g, int color, t_rect rect);
+void			draw_wall_tile(t_game *g, int grid_x, int grid_y);
+void			draw_line(t_game *g, t_point start, t_point end, int color);
+
+/* Raycasting functions */
+void			cast_ray(t_game *g, int x);
+void			render_3d(t_game *g);
+
+// Parsing functions
+int				parse_game_data(t_game *game, int argc, char **argv);
+int				parse_textures(t_game *game, int fd);
+int				parse_colors(t_game *game, int fd);
+int				parse_map(t_game *game, int fd);
+int				parse_texture_line(t_game *game, char *line);
+int				parse_color_line(t_game *game, char *line);
+int				parse_map_content(t_game *game, char *map_content);
+int				is_map_line(char *line);
+int				is_texture_identifier(char *line);
+int				is_color_identifier(char *line);
 
 #endif
