@@ -18,8 +18,8 @@
 # define KEY_RIGHT 65363
 
 /* Movement and rotation speeds */
-# define MOVE_SPEED 0.05
-# define ROT_SPEED 0.03
+# define MOVE_SPEED 0.15
+# define ROT_SPEED 0.08
 
 /* Pixels per grid cell */
 # define TILE_SIZE 32
@@ -27,10 +27,10 @@
 # define PLAYER_RADIUS 0.2
 
 /* Window dimensions */
-# define MAIN_WIN_WIDTH 1280
-# define MAIN_WIN_HEIGHT 720
-# define MINIMAP_WIDTH 200
-# define MINIMAP_HEIGHT 200
+# define MAIN_WIN_WIDTH 1920
+# define MAIN_WIN_HEIGHT 1080
+# define MINIMAP_WIDTH 300
+# define MINIMAP_HEIGHT 300
 
 /* Structure pour les coordonnées */
 typedef struct s_pos

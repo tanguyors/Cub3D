@@ -44,18 +44,50 @@ void	fill_image_rect(t_game *g, int color, t_rect rect)
 	}
 }
 
+static int	is_in_circle(int x, int y, int center_x, int center_y, int radius)
+{
+	int	dx;
+	int	dy;
+
+	dx = x - center_x;
+	dy = y - center_y;
+	return (dx * dx + dy * dy <= radius * radius);
+}
+
 void	draw_map(t_game *g)
 {
 	int		x;
 	int		y;
-	t_rect	wall_rect;
 	int		tile_size;
+	t_point	center;
+	t_point	rotated;
+	double	angle;
+	double	scale;
+	int		radius;
+	t_rect	wall_rect;
+	double	rel_x;
+	double	rel_y;
 
 	// Calculate tile size based on minimap dimensions and map size
 	tile_size = fmin(MINIMAP_WIDTH / g->map.width, MINIMAP_HEIGHT
 			/ g->map.height);
-	// Base map color (non-walls)
-	fill_image_rect(g, 0x202020, (t_rect){0, 0, g->win_width, g->win_height});
+	// Calculate center and radius of minimap
+	center.x = MINIMAP_WIDTH / 2;
+	center.y = MINIMAP_HEIGHT / 2;
+	radius = MINIMAP_WIDTH / 2 - 2; // Leave a small border
+	// Clear the entire minimap area to transparent
+	for (y = 0; y < MINIMAP_HEIGHT; y++)
+	{
+		for (x = 0; x < MINIMAP_WIDTH; x++)
+		{
+			if (is_in_circle(x, y, center.x, center.y, radius))
+				fill_image_rect(g, 0x202020, (t_rect){x, y, 1, 1});
+		}
+	}
+	// Calculate rotation angle based on player direction
+	angle = atan2(g->player.dir_y, g->player.dir_x);
+	// Calculate scale factor to keep map visible
+	scale = 0.8; // Adjust this value to change how much of the map is visible
 	// Draw walls
 	y = 0;
 	while (y < g->map.height)
@@ -65,11 +97,26 @@ void	draw_map(t_game *g)
 		{
 			if (g->map.grid[y][x] == '1')
 			{
-				wall_rect.x = x * tile_size;
-				wall_rect.y = y * tile_size;
-				wall_rect.width = tile_size;
-				wall_rect.height = tile_size;
-				fill_image_rect(g, 0x505050, wall_rect);
+				// Calculate wall position relative to player
+				rel_x = (x - g->player.pos_x) * tile_size;
+				rel_y = (y - g->player.pos_y) * tile_size;
+				// Apply rotation
+				rotated.x = rel_x * cos(-angle) - rel_y * sin(-angle);
+				rotated.y = rel_x * sin(-angle) + rel_y * cos(-angle);
+				// Scale and center
+				rotated.x = center.x + rotated.x * scale;
+				rotated.y = center.y + rotated.y * scale;
+				// Calculate wall rectangle
+				wall_rect.x = rotated.x - (tile_size * scale) / 2;
+				wall_rect.y = rotated.y - (tile_size * scale) / 2;
+				wall_rect.width = tile_size * scale;
+				wall_rect.height = tile_size * scale;
+				// Only draw if the wall is within the circle
+				if (is_in_circle(wall_rect.x + wall_rect.width / 2, wall_rect.y
+						+ wall_rect.height / 2, center.x, center.y, radius))
+				{
+					fill_image_rect(g, 0x505050, wall_rect);
+				}
 			}
 			x++;
 		}
@@ -119,21 +166,22 @@ void	draw_line(t_game *g, t_point start, t_point end, int color)
 
 void	draw_player(t_game *g)
 {
-	int		tile_size;
-	int		px;
-	int		py;
 	t_point	dir_end;
+	int		center_x;
+	int		center_y;
+	int		radius;
 
-	// Calculate tile size based on minimap dimensions and map size
-	tile_size = fmin(MINIMAP_WIDTH / g->map.width, MINIMAP_HEIGHT
-			/ g->map.height);
-	// Convert player position to screen coordinates
-	px = g->player.pos_x * tile_size;
-	py = g->player.pos_y * tile_size;
-	// Draw player circle (3 pixel radius)
-	fill_image_circle(g, 0xFF0000, (t_point){px, py}, 3);
-	// Draw direction vector (20px length)
-	dir_end.x = px + g->player.dir_x * 20;
-	dir_end.y = py + g->player.dir_y * 20;
-	draw_line(g, (t_point){px, py}, dir_end, 0x00FF00);
+	center_x = MINIMAP_WIDTH / 2;
+	center_y = MINIMAP_HEIGHT / 2;
+	radius = MINIMAP_WIDTH / 2 - 2;
+	// Draw player circle at center of minimap (3 pixel radius)
+	fill_image_circle(g, 0xFF0000, (t_point){center_x, center_y}, 3);
+	// Draw direction vector (20px length) pointing up (fixed direction)
+	dir_end.x = center_x;
+	dir_end.y = center_y - 20;
+	// Only draw the line if both points are within the circle
+	if (is_in_circle(dir_end.x, dir_end.y, center_x, center_y, radius))
+	{
+		draw_line(g, (t_point){center_x, center_y}, dir_end, 0x00FF00);
+	}
 }
