@@ -147,10 +147,12 @@ static void	draw_wall_stripe(t_game *g, t_ray_vars *vars, int x)
 {
 	t_rect	wall_stripe;
 	int		color;
+	int		y;
 
 	wall_stripe.x = x;
 	wall_stripe.width = 1;
-	for (int y = vars->draw_start; y < vars->draw_end; y++)
+	y = vars->draw_start;
+	while (y < vars->draw_end)
 	{
 		vars->tex_y = (int)vars->tex_pos & (g->textures[vars->tex_num].height - 1);
 		vars->tex_pos += vars->step;
@@ -162,6 +164,7 @@ static void	draw_wall_stripe(t_game *g, t_ray_vars *vars, int x)
 		wall_stripe.y = y;
 		wall_stripe.height = 1;
 		fill_image_rect(g, color, wall_stripe);
+		y++;
 	}
 }
 
@@ -200,9 +203,27 @@ static void	calculate_floor_steps(t_game *g, t_floor_vars *vars, int y)
 	vars->floor_y = g->player.pos_y + vars->row_distance * vars->ray_dir_y0;
 }
 
+static void	draw_floor_pixel(t_game *g, t_floor_vars *vars, int x, int y)
+{
+	vars->pixel.x = x;
+	vars->pixel.y = y;
+	vars->color = *(int *)(g->textures[4].img_data + (vars->ty
+				* g->textures[4].line_length + vars->tx
+				* (g->textures[4].bits_per_pixel / 8)));
+	fill_image_rect(g, vars->color, vars->pixel);
+	vars->pixel.y = g->win_height - y - 1;
+	vars->color = *(int *)(g->textures[5].img_data + (vars->ty
+				* g->textures[5].line_length + vars->tx
+				* (g->textures[5].bits_per_pixel / 8)));
+	fill_image_rect(g, vars->color, vars->pixel);
+}
+
 static void	draw_floor_line(t_game *g, t_floor_vars *vars, int y)
 {
-	for (int x = 0; x < g->win_width; x++)
+	int	x;
+
+	x = 0;
+	while (x < g->win_width)
 	{
 		vars->cell_x = (int)vars->floor_x;
 		vars->cell_y = (int)vars->floor_y;
@@ -212,29 +233,23 @@ static void	draw_floor_line(t_game *g, t_floor_vars *vars, int y)
 			& (g->textures[4].height - 1);
 		vars->floor_x += vars->floor_step_x;
 		vars->floor_y += vars->floor_step_y;
-		vars->pixel.x = x;
-		vars->pixel.y = y;
-		vars->color = *(int *)(g->textures[4].img_data + (vars->ty
-					* g->textures[4].line_length + vars->tx
-					* (g->textures[4].bits_per_pixel / 8)));
-		fill_image_rect(g, vars->color, vars->pixel);
-		vars->pixel.y = g->win_height - y - 1;
-		vars->color = *(int *)(g->textures[5].img_data + (vars->ty
-					* g->textures[5].line_length + vars->tx
-					* (g->textures[5].bits_per_pixel / 8)));
-		fill_image_rect(g, vars->color, vars->pixel);
+		draw_floor_pixel(g, vars, x, y);
+		x++;
 	}
 }
 
 void	draw_floor_ceiling(t_game *g)
 {
 	t_floor_vars	vars;
+	int			y;
 
 	init_floor_vars(g, &vars);
-	for (int y = g->win_height / 2; y < g->win_height; y++)
+	y = g->win_height / 2;
+	while (y < g->win_height)
 	{
 		calculate_floor_steps(g, &vars, y);
 		draw_floor_line(g, &vars, y);
+		y++;
 	}
 }
 
