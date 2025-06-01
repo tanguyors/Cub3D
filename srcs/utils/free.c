@@ -36,10 +36,8 @@ void	free_game(t_game *game)
 
 	if (!game)
 		return ;
-	// Libérer la map
 	if (game->map.grid)
 		free_tab(game->map.grid);
-	// Libérer les textures
 	for (i = 0; i < 6; i++)
 	{
 		if (game->textures[i].img)
@@ -47,13 +45,10 @@ void	free_game(t_game *game)
 		if (game->textures[i].path)
 			free(game->textures[i].path);
 	}
-	// Libérer l'image principale
 	if (game->screen.img_ptr)
 		mlx_destroy_image(game->mlx, game->screen.img_ptr);
-	// Libérer la fenêtre
 	if (game->win)
 		mlx_destroy_window(game->mlx, game->win);
-	// Libérer MLX
 	if (game->mlx)
 	{
 		mlx_destroy_display(game->mlx);
