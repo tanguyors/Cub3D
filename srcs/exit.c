@@ -1,5 +1,13 @@
 #include <cub3d.h>
 
+int	close_window(t_game *param)
+{
+	if (param)
+		free_game(param);
+	exit(0);
+	return (0);
+}
+
 void	free_map_grid(t_game *g)
 {
 	int	y;

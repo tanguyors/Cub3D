@@ -101,10 +101,10 @@ typedef struct s_game
 	void		*mlx;
 	void		*win;
 	t_map		map;
-	t_texture textures[6]; // NO, SO, WE, EA, floor, ceiling
+	t_texture textures[4]; // NO, SO, WE, EA (floor and ceiling use colors)
 	t_pos		player_pos;
 	t_player	player;
-	double		player_dir;
+	char		player_dir;
 	int win_width;     // largeur de la window
 	int win_height;    // hauteur de la window
 	t_img screen;      // image principal pour le rendu
@@ -169,31 +169,101 @@ int				check_collision(t_game *game, double new_x, double new_y);
 // Ajouter la déclaration de update_movements
 void			update_movements(t_game *game);
 
+int				is_in_circle(int x, int y, int center_x, int center_y,
+					int radius);
 void			draw_map(t_game *g);
 void			draw_player(t_game *g);
 int				exit_with_error(t_game *g, const char *msg);
 
 /* Drawing functions */
+void			draw_pixel(t_game *g, int px, int py, int color);
 void			fill_image_circle(t_game *g, int color, t_point center,
 					int radius);
 void			fill_image_rect(t_game *g, int color, t_rect rect);
-void			draw_wall_tile(t_game *g, int grid_x, int grid_y);
 void			draw_line(t_game *g, t_point start, t_point end, int color);
+void			draw_wall_tile(t_game *g, int grid_x, int grid_y);
+
+/* Raycasting struct */
+typedef struct s_ray_vars
+{
+	double		camera_x;
+	double		ray_dir_x;
+	double		ray_dir_y;
+	int			map_x;
+	int			map_y;
+	double		side_dist_x;
+	double		side_dist_y;
+	double		delta_dist_x;
+	double		delta_dist_y;
+	double		perp_wall_dist;
+	int			step_x;
+	int			step_y;
+	int			hit;
+	int			side;
+	int			line_height;
+	int			draw_start;
+	int			draw_end;
+	int			tex_num;
+	double		wall_x;
+	int			tex_x;
+	double		step;
+	double		tex_pos;
+	int			tex_y;
+}				t_ray_vars;
 
 /* Raycasting functions */
 void			cast_ray(t_game *g, int x);
 void			render_3d(t_game *g);
+void			draw_floor_ceiling(t_game *g);
+void			calculate_wall_height(t_game *g, t_ray_vars *vars);
+void			calculate_texture_coords(t_game *g, t_ray_vars *vars);
+void			draw_wall_stripe(t_game *g, t_ray_vars *vars, int x);
 
-// Parsing functions
-int				parse_game_data(t_game *game, int argc, char **argv);
-int				parse_textures(t_game *game, int fd);
-int				parse_colors(t_game *game, int fd);
+/* Map parsing functions */
+int				init_map_reading(t_game *game, int fd);
+char			*handle_line(char *line, char *temp_map, size_t *max_width);
+char			*read_map_lines(t_game *game, int fd, size_t *max_width);
+int				normalize_line(t_game *game, int i);
+int				normalize_map_lines(t_game *game);
+int				parse_player_position(t_game *game);
+int				is_valid_char(char c);
+int				check_map_chars(t_game *game);
+int				is_space_or_player(char c);
+int				check_horizontal_borders(t_map *map);
+int				check_vertical_borders(t_map *map);
+int				check_spaces_around(t_map *map);
+int				check_map_borders(t_map *map);
 int				parse_map(t_game *game, int fd);
-int				parse_texture_line(t_game *game, char *line);
-int				parse_color_line(t_game *game, char *line);
 int				parse_map_content(t_game *game, char *map_content);
+
+/* New parsing functions */
+int				parse_color_line(t_game *game, char *line);
+int				process_pre_map_line(t_game *game, char *line, int *map_started,
+					char **map_buffer, size_t *max_width);
+int				process_map_line(char *line, char **map_buffer,
+					size_t *max_width);
+int				handle_map_line(char *line, char **map_buffer,
+					size_t *max_width);
+int				finalize_map(t_game *game, char *map_buffer);
+int				parse_textures_and_colors(t_game *game, char *line);
+int				read_and_process_lines(t_game *game, int fd, char **map_buffer,
+					size_t *max_width);
+int				parse_file_single_pass(t_game *game, const char *filename);
 int				is_map_line(char *line);
-int				is_texture_identifier(char *line);
-int				is_color_identifier(char *line);
+
+void			init_game(t_game *g);
+void			set_initial_direction(t_game *g);
+int				game_loop(t_game *game);
+void			render_minimap(t_game *g);
+
+int				get_texture_index(char *identifier);
+int				validate_texture_parts(char **parts);
+int				handle_texture_path(t_game *game, char **parts, int index);
+int				parse_texture(t_game *game, char *line);
+int				check_floor_ceiling_texture(char *trimmed);
+int				parse_texture_if_valid(t_game *game, char *trimmed,
+					int *texture_count);
+int				process_texture_line(t_game *game, char *line,
+					int *texture_count);
 
 #endif

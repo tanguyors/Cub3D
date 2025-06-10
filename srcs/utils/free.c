@@ -20,7 +20,7 @@ void	free_textures(t_game *game)
 	int	i;
 
 	i = 0;
-	while (i < 6)
+	while (i < 4)
 	{
 		if (game->textures[i].img)
 			mlx_destroy_image(game->mlx, game->textures[i].img);
@@ -38,7 +38,7 @@ void	free_game(t_game *game)
 		return ;
 	if (game->map.grid)
 		free_tab(game->map.grid);
-	for (i = 0; i < 6; i++)
+	for (i = 0; i < 4; i++)
 	{
 		if (game->textures[i].img)
 			mlx_destroy_image(game->mlx, game->textures[i].img);
