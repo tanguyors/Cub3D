@@ -2,7 +2,7 @@
 
 static void	init_ray_vars(t_game *g, int x, t_ray_vars *vars)
 {
-	vars->camera_x = 2 * x / (double)g->win_width - 1;
+	vars->camera_x = 2 * x / (double)WINDOW_WIDTH - 1;
 	vars->ray_dir_x = g->player.dir_x + g->player.plane_x * vars->camera_x;
 	vars->ray_dir_y = g->player.dir_y + g->player.plane_y * vars->camera_x;
 	vars->map_x = (int)g->player.pos_x;
@@ -56,10 +56,10 @@ static void	perform_dda(t_game *g, t_ray_vars *vars)
 			vars->map_y += vars->step_y;
 			vars->side = 1;
 		}
-		if (vars->map_y >= 0 && vars->map_y < g->map.height && vars->map_x >= 0
-			&& vars->map_x < g->map.width)
+		if (vars->map_y >= 0 && vars->map_y < g->map_height && vars->map_x >= 0
+			&& vars->map_x < g->map_width)
 		{
-			if (g->map.grid[vars->map_y][vars->map_x] == '1')
+			if (g->map[vars->map_y][vars->map_x] == '1')
 				vars->hit = 1;
 		}
 	}

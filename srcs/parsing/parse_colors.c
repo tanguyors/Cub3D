@@ -44,9 +44,9 @@ int	parse_color_line(t_game *game, char *line)
 	}
 	target_color = NULL;
 	if (ft_strncmp(split[0], "F", 2) == 0)
-		target_color = &game->map.floor_color;
+		target_color = &game->floor_color;
 	else if (ft_strncmp(split[0], "C", 2) == 0)
-		target_color = &game->map.ceiling_color;
+		target_color = &game->ceiling_color;
 	if (!target_color || !parse_and_validate_color_values(split, &r, &g, &b))
 	{
 		free_tab(split);

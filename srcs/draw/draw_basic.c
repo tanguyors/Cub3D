@@ -1,24 +1,13 @@
 #include "../includes/cub3d.h"
 
-typedef struct s_line_params
+void	draw_pixel(t_game *game, int x, int y, int color)
 {
-	int		dx;
-	int		dy;
-	int		sx;
-	int		sy;
-	int		err;
-}			t_line_params;
+	char	*dst;
 
-void	draw_pixel(t_game *g, int px, int py, int color)
-{
-	int	pixel;
-
-	if (px >= 0 && px < g->win_width && py >= 0 && py < g->win_height)
-	{
-		pixel = py * g->screen.line_length + px * (g->screen.bits_per_pixel
-				/ 8);
-		*(int *)(g->screen.img_data + pixel) = color;
-	}
+	if (x < 0 || x >= WINDOW_WIDTH || y < 0 || y >= WINDOW_HEIGHT)
+		return ;
+	dst = game->addr + (y * game->line_length + x * (game->bits_per_pixel / 8));
+	*(unsigned int *)dst = color;
 }
 
 void	fill_image_circle(t_game *g, int color, t_point center, int radius)
@@ -58,11 +47,10 @@ void	fill_image_rect(t_game *g, int color, t_rect rect)
 		x = rect.x;
 		while (x < rect.x + rect.width)
 		{
-			if (x >= 0 && x < g->win_width && y >= 0 && y < g->win_height)
+			if (x >= 0 && x < WINDOW_WIDTH && y >= 0 && y < WINDOW_HEIGHT)
 			{
-				pixel = y * g->screen.line_length + x
-					* (g->screen.bits_per_pixel / 8);
-				*(int *)(g->screen.img_data + pixel) = color;
+				pixel = y * g->line_length + x * (g->bits_per_pixel / 8);
+				*(int *)(g->addr + pixel) = color;
 			}
 			x++;
 		}
@@ -70,50 +58,53 @@ void	fill_image_rect(t_game *g, int color, t_rect rect)
 	}
 }
 
-static void	update_line_coords(t_point *start, t_line_params *params)
+void	draw_rectangle(t_game *game, t_point pos, t_point size, int color)
 {
+	int	i;
+	int	j;
+
+	i = 0;
+	while (i < size.y)
+	{
+		j = 0;
+		while (j < size.x)
+		{
+			draw_pixel(game, pos.x + j, pos.y + i, color);
+			j++;
+		}
+		i++;
+	}
+}
+
+void	draw_line(t_game *game, t_point start, t_point end, int color)
+{
+	int	dx;
+	int	dy;
+	int	sx;
+	int	sy;
+	int	err;
 	int	e2;
 
-	e2 = 2 * params->err;
-	if (e2 >= params->dy)
-	{
-		params->err += params->dy;
-		start->x += params->sx;
-	}
-	if (e2 <= params->dx)
-	{
-		params->err += params->dx;
-		start->y += params->sy;
-	}
-}
-
-static void	draw_line_pixel(t_game *g, t_point point, int color)
-{
-	int	pixel;
-
-	if (point.x >= 0 && point.x < g->win_width && point.y >= 0
-		&& point.y < g->win_height)
-	{
-		pixel = point.y * g->screen.line_length + point.x
-			* (g->screen.bits_per_pixel / 8);
-		*(int *)(g->screen.img_data + pixel) = color;
-	}
-}
-
-void	draw_line(t_game *g, t_point start, t_point end, int color)
-{
-	t_line_params	params;
-
-	params.dx = abs(end.x - start.x);
-	params.dy = -abs(end.y - start.y);
-	params.sx = start.x < end.x ? 1 : -1;
-	params.sy = start.y < end.y ? 1 : -1;
-	params.err = params.dx + params.dy;
+	dx = abs(end.x - start.x);
+	dy = abs(end.y - start.y);
+	sx = (start.x < end.x) ? 1 : -1;
+	sy = (start.y < end.y) ? 1 : -1;
+	err = dx - dy;
 	while (1)
 	{
-		draw_line_pixel(g, start, color);
+		draw_pixel(game, start.x, start.y, color);
 		if (start.x == end.x && start.y == end.y)
 			break ;
-		update_line_coords(&start, &params);
+		e2 = 2 * err;
+		if (e2 > -dy)
+		{
+			err -= dy;
+			start.x += sx;
+		}
+		if (e2 < dx)
+		{
+			err += dx;
+			start.y += sy;
+		}
 	}
 }

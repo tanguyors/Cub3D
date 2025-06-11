@@ -1,63 +1,84 @@
 #include "cub3d.h"
 
-int	check_horizontal_borders(t_map *map)
+int	check_top_border(t_game *game)
 {
 	int	j;
 
 	j = 0;
-	while (j < map->width)
+	while (j < game->map_width)
 	{
-		if (is_space_or_player(map->grid[0][j])
-			|| is_space_or_player(map->grid[map->height - 1][j]))
+		if (game->map[0][j] != '1' && game->map[0][j] != ' ')
+		{
+			ft_printf("Error: Invalid top border\n");
 			return (0);
+		}
 		j++;
 	}
 	return (1);
 }
 
-int	check_vertical_borders(t_map *map)
+int	check_bottom_border(t_game *game)
 {
-	int	i;
+	int	j;
 
-	i = 0;
-	while (i < map->height)
+	j = 0;
+	while (j < game->map_width)
 	{
-		if (is_space_or_player(map->grid[i][0])
-			|| is_space_or_player(map->grid[i][map->width - 1]))
+		if (game->map[game->map_height - 1][j] != '1'
+			&& game->map[game->map_height - 1][j] != ' ')
+		{
+			ft_printf("Error: Invalid bottom border\n");
 			return (0);
-		i++;
+		}
+		j++;
 	}
 	return (1);
 }
 
-int	check_spaces_around(t_map *map)
+int	check_left_border(t_game *game)
 {
 	int	i;
-	int	j;
 
-	i = 1;
-	while (i < map->height - 1)
+	i = 0;
+	while (i < game->map_height)
 	{
-		j = 1;
-		while (j < map->width - 1)
+		if (game->map[i][0] != '1' && game->map[i][0] != ' ')
 		{
-			if (is_space_or_player(map->grid[i][j]))
-			{
-				if (map->grid[i - 1][j] == ' ' || map->grid[i + 1][j] == ' '
-					|| map->grid[i][j - 1] == ' ' || map->grid[i][j + 1] == ' ')
-					return (0);
-			}
-			j++;
+			ft_printf("Error: Invalid left border\n");
+			return (0);
 		}
 		i++;
 	}
 	return (1);
 }
 
-int	check_map_borders(t_map *map)
+int	check_right_border(t_game *game)
 {
-	if (!check_horizontal_borders(map) || !check_vertical_borders(map)
-		|| !check_spaces_around(map))
+	int	i;
+
+	i = 0;
+	while (i < game->map_height)
+	{
+		if (game->map[i][game->map_width - 1] != '1'
+			&& game->map[i][game->map_width - 1] != ' ')
+		{
+			ft_printf("Error: Invalid right border\n");
+			return (0);
+		}
+		i++;
+	}
+	return (1);
+}
+
+int	validate_map_borders(t_game *game)
+{
+	if (!check_top_border(game))
+		return (0);
+	if (!check_bottom_border(game))
+		return (0);
+	if (!check_left_border(game))
+		return (0);
+	if (!check_right_border(game))
 		return (0);
 	return (1);
 }

@@ -1,53 +1,68 @@
 #include "cub3d.h"
 
-static void	init_mlx_window(t_game *g)
+void	init_mlx_window(t_game *g)
 {
 	g->mlx = mlx_init();
 	if (!g->mlx)
 		exit_with_error(g, "MLX init failed");
-	g->win_width = MAIN_WIN_WIDTH;
-	g->win_height = MAIN_WIN_HEIGHT;
-	g->win = mlx_new_window(g->mlx, g->win_width, g->win_height, "Cub3D");
+	g->win = mlx_new_window(g->mlx, WINDOW_WIDTH, WINDOW_HEIGHT, "Cub3D");
 	if (!g->win)
 		exit_with_error(g, "Window creation failed");
 }
 
-static void	init_screen_image(t_game *g)
+void	init_screen_image(t_game *g)
 {
-	g->screen.img_ptr = mlx_new_image(g->mlx, g->win_width, g->win_height);
-	if (!g->screen.img_ptr)
+	g->img = mlx_new_image(g->mlx, WINDOW_WIDTH, WINDOW_HEIGHT);
+	if (!g->img)
 		exit_with_error(g, "Image creation failed");
-	g->screen.img_data = mlx_get_data_addr(g->screen.img_ptr,
-			&g->screen.bits_per_pixel, &g->screen.line_length,
-			&g->screen.endian);
+	g->addr = mlx_get_data_addr(g->img, &g->bits_per_pixel, &g->line_length,
+			&g->endian);
 }
 
-static void	load_texture(t_game *g, int i)
+int	init_textures(t_game *game)
 {
-	int	w;
-	int	h;
+	int	i;
 
-	if (!g->textures[i].path)
-		exit_with_error(g, "Missing texture path");
-	g->textures[i].img = mlx_xpm_file_to_image(g->mlx, g->textures[i].path, &w,
-			&h);
-	if (!g->textures[i].img)
-		exit_with_error(g, "Failed to load texture");
-	g->textures[i].width = w;
-	g->textures[i].height = h;
-	g->textures[i].img_data = mlx_get_data_addr(g->textures[i].img,
-			&g->textures[i].bits_per_pixel, &g->textures[i].line_length,
-			&g->textures[i].endian);
-	printf("Loaded texture %d: %s (%dx%d)\n", i, g->textures[i].path, w, h);
+	i = 0;
+	while (i < 4)
+	{
+		game->textures[i].img = mlx_xpm_file_to_image(game->mlx,
+				game->textures[i].path, &game->textures[i].width,
+				&game->textures[i].height);
+		if (!game->textures[i].img)
+		{
+			ft_printf("Error: Failed to load texture %d\n", i);
+			return (0);
+		}
+		game->textures[i].addr = mlx_get_data_addr(game->textures[i].img,
+				&game->textures[i].bits_per_pixel,
+				&game->textures[i].line_length, &game->textures[i].endian);
+		if (!game->textures[i].addr)
+		{
+			ft_printf("Error: Failed to get texture data %d\n", i);
+			return (0);
+		}
+		i++;
+	}
+	return (1);
 }
 
-void	init_game(t_game *g)
+int	init_game(t_game *game)
 {
-	init_mlx_window(g);
-	init_screen_image(g);
-	for (int i = 0; i < 4; i++)
-		load_texture(g, i);
-	g->move_speed = MOVE_SPEED;
-	g->rot_speed = ROT_SPEED;
-	ft_memset(&g->keys, 0, sizeof(t_keys));
+	game->mlx = mlx_init();
+	if (!game->mlx)
+		return (0);
+	game->win = mlx_new_window(game->mlx, WINDOW_WIDTH, WINDOW_HEIGHT, "cub3D");
+	if (!game->win)
+		return (0);
+	game->img = mlx_new_image(game->mlx, WINDOW_WIDTH, WINDOW_HEIGHT);
+	if (!game->img)
+		return (0);
+	game->addr = mlx_get_data_addr(game->img, &game->bits_per_pixel,
+			&game->line_length, &game->endian);
+	if (!game->addr)
+		return (0);
+	if (!init_textures(game))
+		return (0);
+	return (1);
 }

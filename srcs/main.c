@@ -8,15 +8,15 @@ int	main(int argc, char **argv)
 	if (!parse_game_data(&game, argc, argv))
 		return (1);
 	init_game(&game);
-	game.player.pos_x = game.player_pos.x;
-	game.player.pos_y = game.player_pos.y;
+	game.player.pos_x = game.player_pos_x;
+	game.player.pos_y = game.player_pos_y;
 	set_initial_direction(&game);
 	printf("Position du joueur sur la carte: x=%.2f, y=%.2f\n",
 		game.player.pos_x, game.player.pos_y);
 	printf("Direction du joueur: %c (%.2f, %.2f)\n", game.player_dir,
 		game.player.dir_x, game.player.dir_y);
-	printf("Floor color: 0x%06X\n", game.map.floor_color);
-	printf("Ceiling color: 0x%06X\n", game.map.ceiling_color);
+	printf("Floor color: 0x%06X\n", game.floor_color);
+	printf("Ceiling color: 0x%06X\n", game.ceiling_color);
 	printf("\n\n=== INITIALISATION DES HOOKS ===\n\n");
 	mlx_hook(game.win, 2, 1L << 0, handle_keypress, &game);
 	printf("Hook keypress configuré\n");

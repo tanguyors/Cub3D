@@ -2,17 +2,18 @@
 
 void	calculate_wall_height(t_game *g, t_ray_vars *vars)
 {
+	(void)g;
 	if (vars->side == 0)
 		vars->perp_wall_dist = (vars->side_dist_x - vars->delta_dist_x);
 	else
 		vars->perp_wall_dist = (vars->side_dist_y - vars->delta_dist_y);
-	vars->line_height = (int)(g->win_height / vars->perp_wall_dist);
-	vars->draw_start = -vars->line_height / 2 + g->win_height / 2;
+	vars->line_height = (int)(WINDOW_HEIGHT / vars->perp_wall_dist);
+	vars->draw_start = -vars->line_height / 2 + WINDOW_HEIGHT / 2;
 	if (vars->draw_start < 0)
 		vars->draw_start = 0;
-	vars->draw_end = vars->line_height / 2 + g->win_height / 2;
-	if (vars->draw_end >= g->win_height)
-		vars->draw_end = g->win_height - 1;
+	vars->draw_end = vars->line_height / 2 + WINDOW_HEIGHT / 2;
+	if (vars->draw_end >= WINDOW_HEIGHT)
+		vars->draw_end = WINDOW_HEIGHT - 1;
 }
 
 void	calculate_texture_coords(t_game *g, t_ray_vars *vars)
@@ -32,7 +33,7 @@ void	calculate_texture_coords(t_game *g, t_ray_vars *vars)
 	if (vars->side == 1 && vars->ray_dir_y < 0)
 		vars->tex_x = g->textures[vars->tex_num].width - vars->tex_x - 1;
 	vars->step = 1.0 * g->textures[vars->tex_num].height / vars->line_height;
-	vars->tex_pos = (vars->draw_start - g->win_height / 2 + vars->line_height
+	vars->tex_pos = (vars->draw_start - WINDOW_HEIGHT / 2 + vars->line_height
 			/ 2) * vars->step;
 }
 
@@ -50,7 +51,7 @@ void	draw_wall_stripe(t_game *g, t_ray_vars *vars, int x)
 		vars->tex_y = (int)vars->tex_pos & (g->textures[vars->tex_num].height
 				- 1);
 		vars->tex_pos += vars->step;
-		color = *(int *)(g->textures[vars->tex_num].img_data + (vars->tex_y
+		color = *(int *)(g->textures[vars->tex_num].addr + (vars->tex_y
 					* g->textures[vars->tex_num].line_length + vars->tex_x
 					* (g->textures[vars->tex_num].bits_per_pixel / 8)));
 		if (vars->side == 1)

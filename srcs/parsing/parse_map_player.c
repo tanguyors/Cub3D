@@ -8,8 +8,8 @@ static int	handle_player_found(t_game *game, int x, int y, char c,
 		ft_putstr_fd("Error\nMultiple player start positions\n", 2);
 		return (0);
 	}
-	game->player_pos.x = x + 0.5;
-	game->player_pos.y = y + 0.5;
+	game->player_pos_x = x + 0.5;
+	game->player_pos_y = y + 0.5;
 	game->player_dir = c;
 	(*player_count)++;
 	return (1);
@@ -33,15 +33,15 @@ int	parse_player_position(t_game *game)
 
 	player_count = 0;
 	y = 0;
-	while (y < game->map.height)
+	while (y < game->map_height)
 	{
 		x = 0;
-		while (x < game->map.width)
+		while (x < game->map_width)
 		{
-			if (game->map.grid[y][x] == 'N' || game->map.grid[y][x] == 'S'
-				|| game->map.grid[y][x] == 'E' || game->map.grid[y][x] == 'W')
+			if (game->map[y][x] == 'N' || game->map[y][x] == 'S'
+				|| game->map[y][x] == 'E' || game->map[y][x] == 'W')
 			{
-				if (!handle_player_found(game, x, y, game->map.grid[y][x],
+				if (!handle_player_found(game, x, y, game->map[y][x],
 						&player_count))
 					return (0);
 			}

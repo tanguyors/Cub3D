@@ -39,7 +39,7 @@ int	parse_file_single_pass(t_game *game, const char *filename)
 		return (0);
 	if (read_and_process_lines(game, fd, &map_buffer, &max_width))
 	{
-		game->map.width = (int)max_width;
+		game->map_width = (int)max_width;
 		result = finalize_map(game, map_buffer);
 	}
 	close(fd);

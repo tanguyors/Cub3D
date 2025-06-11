@@ -36,8 +36,8 @@ void	free_game(t_game *game)
 
 	if (!game)
 		return ;
-	if (game->map.grid)
-		free_tab(game->map.grid);
+	if (game->map)
+		free_tab(game->map);
 	for (i = 0; i < 4; i++)
 	{
 		if (game->textures[i].img)
@@ -45,8 +45,8 @@ void	free_game(t_game *game)
 		if (game->textures[i].path)
 			free(game->textures[i].path);
 	}
-	if (game->screen.img_ptr)
-		mlx_destroy_image(game->mlx, game->screen.img_ptr);
+	if (game->img)
+		mlx_destroy_image(game->mlx, game->img);
 	if (game->win)
 		mlx_destroy_window(game->mlx, game->win);
 	if (game->mlx)
@@ -54,4 +54,19 @@ void	free_game(t_game *game)
 		mlx_destroy_display(game->mlx);
 		free(game->mlx);
 	}
+}
+
+void	free_map(char **map, int height)
+{
+	int	i;
+
+	i = 0;
+	if (!map)
+		return ;
+	while (i < height)
+	{
+		free(map[i]);
+		i++;
+	}
+	free(map);
 }

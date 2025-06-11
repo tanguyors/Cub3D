@@ -37,18 +37,18 @@ int	handle_map_line(char *line, char **map_buffer, size_t *max_width)
 
 int	finalize_map(t_game *game, char *map_buffer)
 {
-	game->map.grid = ft_split(map_buffer, '\n');
+	game->map = ft_split(map_buffer, '\n');
 	free(map_buffer);
-	if (!game->map.grid)
+	if (!game->map)
 		return (0);
-	game->map.height = 0;
-	while (game->map.grid[game->map.height])
-		game->map.height++;
+	game->map_height = 0;
+	while (game->map[game->map_height])
+		game->map_height++;
 	if (!normalize_map_lines(game))
 		return (0);
 	if (!parse_player_position(game))
 		return (0);
-	if (!check_map_chars(game))
+	if (!validate_map_chars(game))
 	{
 		ft_putstr_fd("Error\nInvalid character in map\n", 2);
 		return (0);

@@ -1,22 +1,16 @@
 #include "cub3d.h"
 
-#define WINDOW_WIDTH 1920
-#define WINDOW_HEIGHT 1080
-
 static int	init_window(t_game *game)
 {
 	if (!game)
 		return (0);
-	game->win_width = WINDOW_WIDTH;
-	game->win_height = WINDOW_HEIGHT;
 	if (!game->mlx)
 	{
 		game->mlx = mlx_init();
 		if (!game->mlx)
 			return (0);
 	}
-	game->win = mlx_new_window(game->mlx, game->win_width, game->win_height,
-			"Cub3D");
+	game->win = mlx_new_window(game->mlx, WINDOW_WIDTH, WINDOW_HEIGHT, "Cub3D");
 	if (!game->win)
 		return (0);
 	return (1);
@@ -24,22 +18,18 @@ static int	init_window(t_game *game)
 
 static int	init_screen_image(t_game *game)
 {
-	game->screen.img_ptr = mlx_new_image(game->mlx, game->win_width,
-			game->win_height);
-	if (!game->screen.img_ptr)
+	game->img = mlx_new_image(game->mlx, WINDOW_WIDTH, WINDOW_HEIGHT);
+	if (!game->img)
 		return (0);
-	game->screen.img_data = mlx_get_data_addr(game->screen.img_ptr,
-			&game->screen.bits_per_pixel, &game->screen.line_length,
-			&game->screen.endian);
-	game->screen.width = game->win_width;
-	game->screen.height = game->win_height;
+	game->addr = mlx_get_data_addr(game->img, &game->bits_per_pixel,
+			&game->line_length, &game->endian);
 	return (1);
 }
 
 int	load_texture(t_game *game, int index)
 {
-	int		w;
-	int		h;
+	int	w;
+	int	h;
 
 	if (!game->textures[index].path)
 		return (0);

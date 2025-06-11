@@ -4,7 +4,7 @@ int	init_map_reading(t_game *game, int fd)
 {
 	if (fd < 0 || !game)
 		return (0);
-	game->map.height = 0;
+	game->map_height = 0;
 	ft_printf("Starting to read map...\n");
 	return (1);
 }
@@ -46,7 +46,7 @@ char	*read_map_lines(t_game *game, int fd, size_t *max_width)
 		{
 			map_started = 1;
 			temp_map = handle_line(line, temp_map, max_width);
-			game->map.height++;
+			game->map_height++;
 		}
 		else if (map_started)
 		{

@@ -13,25 +13,31 @@ void	free_map_grid(t_game *g)
 	int	y;
 
 	y = -1;
-	if (g->map.grid)
+	if (g->map)
 	{
-		while (++y < g->map.height)
-			free(g->map.grid[y]);
-		free(g->map.grid);
+		while (++y < g->map_height)
+			free(g->map[y]);
+		free(g->map);
 	}
 }
 
-int	exit_with_error(t_game *g, const char *msg)
+void	exit_with_error(t_game *g, const char *msg)
 {
-	if (msg)
-		fprintf(stderr, "Error\n%s\n", msg);
-	if (g->screen.img_ptr)
-		mlx_destroy_image(g->mlx, g->screen.img_ptr);
-	free_textures(g);
-	free_map_grid(g);
-	if (g->win)
-		mlx_destroy_window(g->mlx, g->win);
-	if (g->mlx)
-		free(g->mlx);
-	exit(EXIT_FAILURE);
+	if (g)
+	{
+		if (g->mlx)
+		{
+			if (g->win)
+				mlx_destroy_window(g->mlx, g->win);
+			mlx_destroy_display(g->mlx);
+			free(g->mlx);
+		}
+		if (g->map)
+			free_map(g->map, g->map_height);
+		free_textures(g);
+	}
+	ft_putstr_fd("Error\n", 2);
+	ft_putstr_fd((char *)msg, 2);
+	ft_putstr_fd("\n", 2);
+	exit(1);
 }
