@@ -6,7 +6,7 @@
 /*   By: ysuliman <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 08:36:45 by ysuliman          #+#    #+#             */
-/*   Updated: 2025/06/19 11:10:08 by ysuliman         ###   ########.fr       */
+/*   Updated: 2025/06/19 12:23:18 by torsini          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ int	parse_file_single_pass(t_game *game, const char *filename)
 	else
 	{
 		close(fd);
-		exit_with_error(game, "Erreur lors du parsing du fichier (textures, couleurs ou map)");
+		exit_with_error(game, "Erreur parsing texture, color or file");
 	}
 	close(fd);
 	return (result);
@@ -70,7 +70,11 @@ int	parse_file_single_pass(t_game *game, const char *filename)
 
 int	parse_game_data(t_game *game, int argc, char **argv)
 {
-	(void)argc;
+	if (argc != 2 || !check_file_extension(argv[1]))
+	{
+		ft_printf("program must be run as : ./cub3D {map.cub}");
+		return (0);
+	}
 	if (!parse_file_single_pass(game, argv[1]))
 		return (0);
 	return (1);

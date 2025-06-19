@@ -6,7 +6,7 @@
 /*   By: ysuliman <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 08:36:12 by ysuliman          #+#    #+#             */
-/*   Updated: 2025/06/19 08:55:18 by ysuliman         ###   ########.fr       */
+/*   Updated: 2025/06/19 12:20:33 by torsini          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,18 +23,5 @@ int	check_file_extension(char *filename)
 		return (0);
 	if (ft_strncmp(dot, ".cub", 5) != 0)
 		return (0);
-	return (1);
-}
-
-int	check_file_access(char *filename)
-{
-	int	fd;
-
-	if (!filename)
-		return (0);
-	fd = open(filename, O_RDONLY);
-	if (fd == -1)
-		return (0);
-	close(fd);
 	return (1);
 }

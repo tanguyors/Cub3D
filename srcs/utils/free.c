@@ -6,7 +6,7 @@
 /*   By: ysuliman <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 08:38:57 by ysuliman          #+#    #+#             */
-/*   Updated: 2025/06/19 10:33:38 by ysuliman         ###   ########.fr       */
+/*   Updated: 2025/06/19 12:17:07 by torsini          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,14 +85,14 @@ void	free_map(char **map, int height)
 	free(map);
 }
 
-void free_split(char **split)
+void	free_split(char **split)
 {
-	int i = 0;
+	int	i;
+
+	i = 0;
 	if (!split)
-		return;
+		return ;
 	while (split[i])
 		free(split[i++]);
 	free(split);
 }
-
-
