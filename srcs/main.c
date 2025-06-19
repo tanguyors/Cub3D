@@ -18,7 +18,7 @@ int	main(int argc, char **argv)
 
 	ft_memset(&game, 0, sizeof(t_game));
 	if (!parse_game_data(&game, argc, argv))
-		return (1);
+		exit_with_error(&game, "Erreur lors du parsing du fichier");
 	init_game(&game);
 	game.player.pos_x = game.player_pos_x;
 	game.player.pos_y = game.player_pos_y;

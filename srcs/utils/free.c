@@ -84,3 +84,15 @@ void	free_map(char **map, int height)
 	}
 	free(map);
 }
+
+void free_split(char **split)
+{
+	int i = 0;
+	if (!split)
+		return;
+	while (split[i])
+		free(split[i++]);
+	free(split);
+}
+
+

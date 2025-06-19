@@ -64,9 +64,17 @@ int	finalize_map(t_game *game, char *map_buffer)
 	if (!finalize_map_split_and_count(game, map_buffer))
 		return (0);
 	if (!finalize_map_borders(game))
+	{
+		free_tab(game->map);
+		game->map = NULL;
 		return (0);
+	}
 	if (!finalize_map_validation(game))
+	{
+		free_tab(game->map);
+		game->map = NULL;
 		return (0);
+	}
 	return (1);
 }
 

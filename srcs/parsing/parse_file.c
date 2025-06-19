@@ -60,7 +60,10 @@ int	parse_file_single_pass(t_game *game, const char *filename)
 		result = finalize_map(game, map_buffer);
 	}
 	else
-		result = 0;
+	{
+		close(fd);
+		exit_with_error(game, "Erreur lors du parsing du fichier (textures, couleurs ou map)");
+	}
 	close(fd);
 	return (result);
 }
