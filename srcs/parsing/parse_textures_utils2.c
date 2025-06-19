@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parse_textures_utils2.c                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ysuliman <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/19 08:38:32 by ysuliman          #+#    #+#             */
+/*   Updated: 2025/06/19 09:51:27 by ysuliman         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "cub3d.h"
 
 int	parse_texture_if_valid(t_game *game, char *trimmed, int *texture_count)
@@ -43,7 +55,8 @@ int	parse_textures(t_game *game, int fd)
 	int		texture_count;
 
 	texture_count = 0;
-	while ((line = get_next_line(fd)) != NULL && texture_count < 4)
+	line = get_next_line(fd);
+	while (line != NULL && texture_count < 4)
 	{
 		if (!process_texture_line(game, line, &texture_count))
 			return (0);

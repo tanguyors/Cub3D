@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   raycasting_wall.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ysuliman <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/19 08:35:28 by ysuliman          #+#    #+#             */
+/*   Updated: 2025/06/19 11:10:17 by ysuliman         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/cub3d.h"
 
 void	calculate_wall_height(t_game *g, t_ray_vars *vars)
@@ -16,12 +28,26 @@ void	calculate_wall_height(t_game *g, t_ray_vars *vars)
 		vars->draw_end = WINDOW_HEIGHT - 1;
 }
 
-void	calculate_texture_coords(t_game *g, t_ray_vars *vars)
+static void	determine_texture_number(t_ray_vars *vars)
 {
 	if (vars->side == 0)
-		vars->tex_num = vars->ray_dir_x > 0 ? 3 : 2;
+	{
+		if (vars->ray_dir_x > 0)
+			vars->tex_num = 3;
+		else
+			vars->tex_num = 2;
+	}
 	else
-		vars->tex_num = vars->ray_dir_y > 0 ? 1 : 0;
+	{
+		if (vars->ray_dir_y > 0)
+			vars->tex_num = 1;
+		else
+			vars->tex_num = 0;
+	}
+}
+
+static void	calculate_wall_x_and_tex(t_game *g, t_ray_vars *vars)
+{
 	if (vars->side == 0)
 		vars->wall_x = g->player.pos_y + vars->perp_wall_dist * vars->ray_dir_y;
 	else
@@ -32,6 +58,12 @@ void	calculate_texture_coords(t_game *g, t_ray_vars *vars)
 		vars->tex_x = g->textures[vars->tex_num].width - vars->tex_x - 1;
 	if (vars->side == 1 && vars->ray_dir_y < 0)
 		vars->tex_x = g->textures[vars->tex_num].width - vars->tex_x - 1;
+}
+
+void	calculate_texture_coords(t_game *g, t_ray_vars *vars)
+{
+	determine_texture_number(vars);
+	calculate_wall_x_and_tex(g, vars);
 	vars->step = 1.0 * g->textures[vars->tex_num].height / vars->line_height;
 	vars->tex_pos = (vars->draw_start - WINDOW_HEIGHT / 2 + vars->line_height
 			/ 2) * vars->step;

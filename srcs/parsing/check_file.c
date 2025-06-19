@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   check_file.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ysuliman <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/19 08:36:12 by ysuliman          #+#    #+#             */
+/*   Updated: 2025/06/19 08:55:18 by ysuliman         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "cub3d.h"
 
 int	check_file_extension(char *filename)
@@ -16,7 +28,7 @@ int	check_file_extension(char *filename)
 
 int	check_file_access(char *filename)
 {
-	int fd;
+	int	fd;
 
 	if (!filename)
 		return (0);

@@ -38,7 +38,15 @@ SRCS		= srcs/main.c \
 			  srcs/exit.c \
 			  srcs/game/game_init.c \
 			  srcs/game/game_direction.c \
-			  srcs/game/game_render.c
+			  srcs/game/game_render.c \
+			  srcs/parsing/parse_map_normalize.c \
+			  srcs/parsing/parse_map_borders_utils.c \
+			  srcs/parsing/parse_map_spaces.c \
+			  srcs/parsing/parse_map_spaces_utils.c \
+			  srcs/parsing/parse_map_content_pre.c \
+			  srcs/parsing/parse_map_content_utils.c \
+			  srcs/draw/draw_map_utils.c \
+			  srcs/draw/draw_basic_utils.c
 
 OBJS		= $(SRCS:.c=.o)
 

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   cub3d.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ysuliman <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/19 09:03:41 by ysuliman          #+#    #+#             */
+/*   Updated: 2025/06/19 11:13:55 by ysuliman         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef CUB3D_H
 # define CUB3D_H
 
@@ -147,13 +159,84 @@ typedef struct s_game
 	t_keys		keys;
 }				t_game;
 
+typedef struct s_fillctx
+{
+	char		**map;
+	int			**visited;
+	int			width;
+	int			height;
+}				t_fillctx;
+
+typedef struct s_mapreadctx
+{
+	char		**temp_map;
+	size_t		*max_width;
+	t_game		*game;
+	int			*map_started;
+}				t_mapreadctx;
+
+typedef struct s_playerctx
+{
+	t_game		*game;
+	int			x;
+	int			y;
+	char		c;
+	int			*player_count;
+}				t_playerctx;
+
+typedef struct s_pre_map_ctx
+{
+	t_game		*game;
+	int			*map_started;
+	char		**map_buffer;
+	size_t		*max_width;
+}				t_pre_map_ctx;
+
+typedef struct s_map_vars
+{
+	int			tile_size;
+	t_point		center;
+	double		scale;
+	int			radius;
+}				t_map_vars;
+
+typedef struct s_line_ctx
+{
+	t_game		*game;
+	t_point		start;
+	t_point		end;
+	int			color;
+}				t_line_ctx;
+
+typedef struct s_line_dir
+{
+	int			start_x;
+	int			end_x;
+	int			start_y;
+	int			end_y;
+}				t_line_dir;
+
+typedef struct s_line_vars
+{
+	int			dx;
+	int			dy;
+	int			sx;
+	int			sy;
+	int			err;
+}				t_line_vars;
+
+typedef struct s_wall_calc
+{
+	double		rel_x;
+	double		rel_y;
+	double		angle;
+}				t_wall_calc;
+
 // Basic drawing functions
 void			draw_pixel(t_game *game, int x, int y, int color);
 void			draw_rectangle(t_game *game, t_point pos, t_point size,
 					int color);
 void			draw_line(t_game *game, t_point start, t_point end, int color);
-void			draw_vertical_line(t_game *game, int x, int start, int end,
-					t_ray *ray);
 int				is_in_circle(t_point point, t_point center, int radius);
 void			fill_image_circle(t_game *g, int color, t_point center,
 					int radius);
@@ -230,8 +313,7 @@ int				game_loop(t_game *game);
 
 int				is_map_line(char *line);
 
-int				process_pre_map_line(t_game *game, char *line, int *map_started,
-					char **map_buffer, size_t *max_width);
+int				process_pre_map_line(t_pre_map_ctx *ctx, char *line);
 int				process_map_line(char *line, char **map_buffer,
 					size_t *max_width);
 int				finalize_map(t_game *game, char *map_buffer);
@@ -252,5 +334,21 @@ void			exit_with_error(t_game *g, const char *message);
 
 void			update_movements(t_game *game);
 void			render_3d(t_game *game);
+
+int				check_raw_map_borders(char **map, int map_height);
+int				trim_trailing_spaces_len(const char *line);
+
+int				alloc_visited(int ***visited, int width, int height);
+void			free_visited(int **visited, int height);
+int				is_walkable(char c);
+int				flood_fill(t_fillctx *ctx, int x, int y);
+
+int				finalize_map_borders(t_game *game);
+int				finalize_map_validation(t_game *game);
+
+double			get_rotation_angle(t_game *g);
+void			init_map_vars(t_game *g, t_map_vars *vars);
+void			calculate_wall_coords(t_game *g, t_map_vars *vars,
+					t_point *rotated, t_point pos);
 
 #endif

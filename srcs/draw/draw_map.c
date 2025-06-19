@@ -1,50 +1,16 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   draw_map.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ysuliman <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/19 08:35:06 by ysuliman          #+#    #+#             */
+/*   Updated: 2025/06/19 11:10:10 by ysuliman         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/cub3d.h"
-
-typedef struct s_map_vars
-{
-	int			tile_size;
-	t_point		center;
-	double		scale;
-	int			radius;
-}				t_map_vars;
-
-static double	get_rotation_angle(t_game *g)
-{
-	double	angle;
-
-	angle = atan2(g->player.dir_y, g->player.dir_x);
-	if (angle > 3.14159265358979323846)
-		angle -= 2 * 3.14159265358979323846;
-	else if (angle < -3.14159265358979323846)
-		angle += 2 * 3.14159265358979323846;
-	return (angle);
-}
-
-static void	init_map_vars(t_game *g, t_map_vars *vars)
-{
-	vars->tile_size = fmin(MINIMAP_WIDTH / g->map_width, MINIMAP_HEIGHT
-			/ g->map_height);
-	vars->center.x = MINIMAP_WIDTH / 2;
-	vars->center.y = MINIMAP_HEIGHT / 2;
-	vars->radius = MINIMAP_WIDTH / 2 - 2;
-	vars->scale = 0.8;
-}
-
-static void	calculate_wall_coords(t_game *g, t_map_vars *vars, int x, int y,
-		t_point *rotated)
-{
-	double	rel_x;
-	double	rel_y;
-	double	angle;
-
-	rel_x = (x - g->player.pos_x) * vars->tile_size;
-	rel_y = (y - g->player.pos_y) * vars->tile_size;
-	angle = get_rotation_angle(g);
-	rotated->x = rel_x * cos(angle) - rel_y * sin(angle);
-	rotated->y = rel_x * sin(angle) + rel_y * cos(angle);
-	rotated->x = vars->center.x + rotated->x * vars->scale;
-	rotated->y = vars->center.y + rotated->y * vars->scale;
-}
 
 static void	draw_wall(t_game *g, t_map_vars *vars, int x, int y)
 {
@@ -52,7 +18,10 @@ static void	draw_wall(t_game *g, t_map_vars *vars, int x, int y)
 	t_point	wall_center;
 	t_rect	wall_rect;
 
-	calculate_wall_coords(g, vars, x, y, &rotated);
+	rotated.x = (x - g->player.pos_x) * vars->tile_size;
+	rotated.y = (y - g->player.pos_y) * vars->tile_size;
+	rotated.x = vars->center.x + rotated.x * vars->scale;
+	rotated.y = vars->center.y + rotated.y * vars->scale;
 	wall_rect.x = rotated.x - (vars->tile_size * vars->scale) / 2;
 	wall_rect.y = rotated.y - (vars->tile_size * vars->scale) / 2;
 	wall_rect.width = vars->tile_size * vars->scale;
@@ -110,7 +79,12 @@ void	draw_map(t_game *g)
 {
 	t_map_vars	vars;
 
-	init_map_vars(g, &vars);
+	vars.tile_size = fmin(MINIMAP_WIDTH / g->map_width, MINIMAP_HEIGHT
+			/ g->map_height);
+	vars.center.x = MINIMAP_WIDTH / 2;
+	vars.center.y = MINIMAP_HEIGHT / 2;
+	vars.radius = MINIMAP_WIDTH / 2 - 2;
+	vars.scale = 0.8;
 	draw_minimap_background(g, vars.center, vars.radius);
 	draw_map_walls(g, &vars);
 }

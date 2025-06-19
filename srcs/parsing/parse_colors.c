@@ -1,11 +1,16 @@
-#include "cub3d.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parse_colors.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ysuliman <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/19 08:36:16 by ysuliman          #+#    #+#             */
+/*   Updated: 2025/06/19 11:10:06 by ysuliman         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-// int	is_color_identifier(char *line)
-// {
-// 	if (!line || ft_strlen(line) < 2)
-// 		return (0);
-// 	return ((line[0] == 'F' || line[0] == 'C') && line[1] == ' ');
-// }
+#include "cub3d.h"
 
 int	parse_and_validate_color_values(char **split, int *r, int *g, int *b)
 {
@@ -62,7 +67,8 @@ int	parse_colors(t_game *game, int fd)
 	int		colors_found;
 
 	colors_found = 0;
-	while ((line = get_next_line(fd)) != NULL && colors_found < 2)
+	line = get_next_line(fd);
+	while (line != NULL && colors_found < 2)
 	{
 		if (line[ft_strlen(line) - 1] == '\n')
 			line[ft_strlen(line) - 1] = '\0';
@@ -76,6 +82,7 @@ int	parse_colors(t_game *game, int fd)
 			colors_found++;
 		}
 		free(line);
+		line = get_next_line(fd);
 	}
 	if (line)
 		free(line);

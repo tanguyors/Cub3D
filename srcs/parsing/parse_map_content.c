@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parse_map_content.c                                :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ysuliman <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/19 08:37:07 by ysuliman          #+#    #+#             */
+/*   Updated: 2025/06/19 11:10:05 by ysuliman         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "cub3d.h"
 
 int	parse_textures_and_colors(t_game *game, char *line)
@@ -35,7 +47,7 @@ int	handle_map_line(char *line, char **map_buffer, size_t *max_width)
 	return (1);
 }
 
-int	finalize_map(t_game *game, char *map_buffer)
+static int	finalize_map_split_and_count(t_game *game, char *map_buffer)
 {
 	game->map = ft_split(map_buffer, '\n');
 	free(map_buffer);
@@ -44,32 +56,17 @@ int	finalize_map(t_game *game, char *map_buffer)
 	game->map_height = 0;
 	while (game->map[game->map_height])
 		game->map_height++;
-	if (!normalize_map_lines(game))
-		return (0);
-	if (!parse_player_position(game))
-		return (0);
-	if (!validate_map_chars(game))
-	{
-		ft_putstr_fd("Error\nInvalid character in map\n", 2);
-		return (0);
-	}
 	return (1);
 }
 
-int	process_pre_map_line(t_game *game, char *line, int *map_started,
-		char **map_buffer, size_t *max_width)
+int	finalize_map(t_game *game, char *map_buffer)
 {
-	if (is_texture_identifier(line) || is_color_identifier(line))
-	{
-		if (!parse_textures_and_colors(game, line))
-			return (0);
-	}
-	else if (is_map_line(line))
-	{
-		*map_started = 1;
-		if (!handle_map_line(line, map_buffer, max_width))
-			return (0);
-	}
+	if (!finalize_map_split_and_count(game, map_buffer))
+		return (0);
+	if (!finalize_map_borders(game))
+		return (0);
+	if (!finalize_map_validation(game))
+		return (0);
 	return (1);
 }
 

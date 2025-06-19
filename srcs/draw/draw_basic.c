@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   draw_basic.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ysuliman <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/19 08:35:00 by ysuliman          #+#    #+#             */
+/*   Updated: 2025/06/19 11:08:00 by ysuliman         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/cub3d.h"
 
 void	draw_pixel(t_game *game, int x, int y, int color)
@@ -10,101 +22,60 @@ void	draw_pixel(t_game *game, int x, int y, int color)
 	*(unsigned int *)dst = color;
 }
 
-void	fill_image_circle(t_game *g, int color, t_point center, int radius)
+static void	set_line_direction(t_line_dir dir, int *sx, int *sy)
 {
-	int	px;
-	int	py;
-	int	y;
-	int	x;
+	if (dir.start_x < dir.end_x)
+		*sx = 1;
+	else
+		*sx = -1;
+	if (dir.start_y < dir.end_y)
+		*sy = 1;
+	else
+		*sy = -1;
+}
 
-	y = -radius;
-	while (y <= radius)
+static void	update_line_error(t_line_vars *vars, t_point *pos)
+{
+	int	e2;
+
+	e2 = 2 * vars->err;
+	if (e2 > -vars->dy)
 	{
-		x = -radius;
-		while (x <= radius)
-		{
-			if (x * x + y * y <= radius * radius)
-			{
-				px = center.x + x;
-				py = center.y + y;
-				draw_pixel(g, px, py, color);
-			}
-			x++;
-		}
-		y++;
+		vars->err -= vars->dy;
+		pos->x += vars->sx;
+	}
+	if (e2 < vars->dx)
+	{
+		vars->err += vars->dx;
+		pos->y += vars->sy;
 	}
 }
 
-void	fill_image_rect(t_game *g, int color, t_rect rect)
+static void	init_line_vars(t_line_dir dir, t_line_vars *vars)
 {
-	int	pixel;
-	int	y;
-	int	x;
-
-	y = rect.y;
-	while (y < rect.y + rect.height)
-	{
-		x = rect.x;
-		while (x < rect.x + rect.width)
-		{
-			if (x >= 0 && x < WINDOW_WIDTH && y >= 0 && y < WINDOW_HEIGHT)
-			{
-				pixel = y * g->line_length + x * (g->bits_per_pixel / 8);
-				*(int *)(g->addr + pixel) = color;
-			}
-			x++;
-		}
-		y++;
-	}
-}
-
-void	draw_rectangle(t_game *game, t_point pos, t_point size, int color)
-{
-	int	i;
-	int	j;
-
-	i = 0;
-	while (i < size.y)
-	{
-		j = 0;
-		while (j < size.x)
-		{
-			draw_pixel(game, pos.x + j, pos.y + i, color);
-			j++;
-		}
-		i++;
-	}
+	vars->dx = abs(dir.end_x - dir.start_x);
+	vars->dy = abs(dir.end_y - dir.start_y);
+	set_line_direction(dir, &vars->sx, &vars->sy);
+	vars->err = vars->dx - vars->dy;
 }
 
 void	draw_line(t_game *game, t_point start, t_point end, int color)
 {
-	int	dx;
-	int	dy;
-	int	sx;
-	int	sy;
-	int	err;
-	int	e2;
+	t_line_vars	vars;
+	t_line_dir	dir;
+	t_point		pos;
 
-	dx = abs(end.x - start.x);
-	dy = abs(end.y - start.y);
-	sx = (start.x < end.x) ? 1 : -1;
-	sy = (start.y < end.y) ? 1 : -1;
-	err = dx - dy;
+	dir.start_x = start.x;
+	dir.end_x = end.x;
+	dir.start_y = start.y;
+	dir.end_y = end.y;
+	init_line_vars(dir, &vars);
+	pos = start;
 	while (1)
 	{
-		draw_pixel(game, start.x, start.y, color);
-		if (start.x == end.x && start.y == end.y)
+		draw_pixel(game, pos.x, pos.y, color);
+		if (pos.x == end.x && pos.y == end.y)
 			break ;
-		e2 = 2 * err;
-		if (e2 > -dy)
-		{
-			err -= dy;
-			start.x += sx;
-		}
-		if (e2 < dx)
-		{
-			err += dx;
-			start.y += sy;
-		}
+		update_line_error(&vars, &pos);
 	}
 }

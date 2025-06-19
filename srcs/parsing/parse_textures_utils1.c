@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parse_textures_utils1.c                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ysuliman <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/19 08:38:23 by ysuliman          #+#    #+#             */
+/*   Updated: 2025/06/19 08:52:03 by ysuliman         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "cub3d.h"
 
 int	get_texture_index(char *identifier)
@@ -75,7 +87,7 @@ int	check_floor_ceiling_texture(char *trimmed)
 	if (ft_strncmp(trimmed, "FT ", 3) == 0 || ft_strncmp(trimmed, "CT ",
 			3) == 0)
 	{
-		ft_printf("Error: Floor and ceiling textures are not supported. Use F and C for colors.\n");
+		ft_printf("Error: Floor/ceiling textures not supported.\n");
 		return (0);
 	}
 	return (1);

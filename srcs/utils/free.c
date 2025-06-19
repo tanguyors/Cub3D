@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   free.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ysuliman <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/19 08:38:57 by ysuliman          #+#    #+#             */
+/*   Updated: 2025/06/19 10:33:38 by ysuliman         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "cub3d.h"
 
 void	free_tab(char **tab)
@@ -38,12 +50,14 @@ void	free_game(t_game *game)
 		return ;
 	if (game->map)
 		free_tab(game->map);
-	for (i = 0; i < 4; i++)
+	i = 0;
+	while (i < 4)
 	{
 		if (game->textures[i].img)
 			mlx_destroy_image(game->mlx, game->textures[i].img);
 		if (game->textures[i].path)
 			free(game->textures[i].path);
+		i++;
 	}
 	if (game->img)
 		mlx_destroy_image(game->mlx, game->img);
